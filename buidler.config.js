@@ -1,8 +1,9 @@
 usePlugin('buidler-ethers-v5');
-usePlugin('@nomiclabs/buidler-waffle');
 usePlugin('buidler-spdx-license-identifier');
 usePlugin('buidler-abi-exporter');
 usePlugin('buidler-contract-sizer');
+usePlugin('@nomiclabs/buidler-waffle');
+require('dotenv').config();
 
 module.exports = {
     defaultNetwork: 'buidlerevm',
@@ -19,15 +20,15 @@ module.exports = {
         }
     },
     solc: {
-        version: '0.6.8',
+        version: '0.7.1',
         optimizer: {
             enabled: true,
             runs: 200
         }
     },
     paths: {
-        sources: './contracts',
-        tests: './tests',
+        sources: './contracts/7',
+        tests: './test',
         cache: './cache',
         artifacts: './artifacts'
     },
