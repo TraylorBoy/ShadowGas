@@ -1,0 +1,30 @@
+{
+  "name": "@traylorboy/shadow-gas",
+  "version": "1.0.0",
+  "description": "Stores, Transfers, and Trades, Ethereum Gas Tokens",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TraylorBoy/ShadowGas.git"
+  },
+  "author": "Marques Traylor",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TraylorBoy/ShadowGas/issues"
+  },
+  "homepage": "https://github.com/TraylorBoy/ShadowGas#readme",
+  "devDependencies": {
+    "@nomiclabs/buidler": "^1.4.5",
+    "@nomiclabs/buidler-ethers": "^2.0.0",
+    "@nomiclabs/buidler-waffle": "^2.1.0",
+    "buidler-abi-exporter": "^1.0.1",
+    "buidler-contract-sizer": "^1.0.2",
+    "buidler-spdx-license-identifier": "^1.0.4",
+    "ethereum-waffle": "^3.1.0"
+  },
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "node-fetch": "^2.6.1",
+    "ethers": "^5.0.13",
+    "buidler-ethers-v5": "^0.2.2"
+  }
+}
