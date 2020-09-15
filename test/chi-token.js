@@ -2,6 +2,8 @@ const { expect } = require('chai');
 const { ethers } = require('ethers');
 const bre = require('@nomiclabs/buidler');
 
+// Test on buidlerevm network
+
 describe('Contract Chi Token', () => {
 
     let ShadowGas;
@@ -37,6 +39,7 @@ describe('Contract Chi Token', () => {
 
     });
 
+    // Will always fail if defaultNetwork is not buidlerevm
     describe('Mint', () => {
 
         it('Should mint 20 Chi Tokens and send them to Shadow', async () => {

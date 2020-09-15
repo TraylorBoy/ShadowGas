@@ -1,29 +1,24 @@
 const bre = require('@nomiclabs/buidler');
-const { ethers } = require('ethers');
+const {
+    ethers
+} = require('ethers');
 const {
     Sauce,
     Logger
-} = require('./helpers/helper');
+} = require('../helpers/helper');
 require('dotenv').config();
 
 async function main() {
 
     [deployer] = await bre.ethers.getSigners();
 
-    const ShadowGas = await bre.ethers.getContractFactory('ShadowGas');
+    const ShadowGas = await bre.ethers.getContractAt('ShadowGas', process.env.SHADOWGAS);
 
     Logger.talk(`Wallet Balance: ${Sauce.fromEther((await deployer.getBalance()).toString())}`);
 
-    const { gasPrice, gasLimit } = await Sauce.gasInfo();
+    Logger.talk(`Connected to station at: ${ShadowGas.address}`);
 
-    const shadowGas = await ShadowGas.deploy({
-        gasPrice,
-        gasLimit
-    });
-
-    await shadowGas.deployed();
-
-    Logger.talk(`Station deployed to: ${shadowGas.address}`);
+    await Sauce.stationBalance();
 
 }
 

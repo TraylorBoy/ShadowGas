@@ -15,13 +15,17 @@ exports.sleep = async (len) => {
     });
 };
 
-exports.gasInfo = async (type) => {
+exports.gasInfo = async () => {
     const request = await fetch(`https://ethgasstation.info/api/ethgasAPI.json?api-key=${process.env.ETH_GAS_STATION}`);
     const prices = await request.json();
 
-    const gasLimit = 1000000;
-    const gasPrice = prices[type] / 10;
-    const waitTime = prices[`${type}Wait`] * 10; // in minutes
+    // Gas Speed can either be one of the below
+    // fastest, fast, average, safeLow
+    // check https://ethgasstation.info
+    
+    const gasLimit = bre.shadowConfig.GasLimit;
+    const gasPrice = prices[bre.shadowConfig.GasSpeed] / 10;
+    const waitTime = prices[`${bre.shadowConfig.GasSpeed}Wait`] * 10; // in minutes
     const txCost = this.fromEther((gasLimit * (gasPrice * 1000000000)).toString());
 
     Logger.txInfo(gasPrice, gasLimit, waitTime, txCost);
@@ -32,25 +36,29 @@ exports.gasInfo = async (type) => {
     };
 };
 
-// TODO: Get contract balance
-exports.fundStation = async (amt, gasType) => {
-
-    Logger.talk(`Will Fund station with: ${amt} eth`);
-    
-    const { gasLimit, gasPrice } = await this.gasInfo(gasType);
+exports.stationBalance = async () => {
 
     [deployer] = await bre.ethers.getSigners();
 
-    Logger.talk(`Sending funds to station...`);
+    const ShadowGas = await bre.ethers.getContractAt('ShadowGas', process.env.SHADOWGAS);
 
-    await deployer.sendTransaction({
-        to: process.env.SHADOWGAS,
-        from: process.env.WALLET,
-        value: this.toEther(amt.toString()),
-        gasLimit,
-        gasPrice
-    });
+    const tankAmount = await ShadowGas.tankAmount();
 
-    Logger.talk('Funds transferred');
-    
+    if (tankAmount > 0) Logger.talk(`Station stocked at: ${tankAmount} Chi`);
+    else Logger.talk(`Station empty`);
+
+    return tankAmount;
+
+};
+
+exports.walletBalance = async () => {
+    [deployer] = await bre.ethers.getSigners();
+
+    const ShadowGas = await bre.ethers.getContractAt('ShadowGas', process.env.SHADOWGAS);
+
+    const bal = this.fromEther((await deployer.getBalance()).toString());
+
+    Logger.talk(`Wallet Balance: ${bal}`);
+
+    return bal;
 };
