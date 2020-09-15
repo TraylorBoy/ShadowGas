@@ -1,4 +1,4 @@
-<h1 align="center">Welcome to ShadowGas 👋</h1>
+<h1 align="center">ShadowGas</h1>
 <p>
   <img alt="Version" src="https://img.shields.io/badge/version-1.0.0-blue.svg?cacheSeconds=2592000" />
   <a href="https://github.com/TraylorBoy/ShadowGas#readme" target="_blank">
@@ -13,8 +13,6 @@
 </p>
 
 > Stores, Transfers, and Trades, Ethereum Gas Tokens
-
-### 🏠 [Homepage](https://github.com/TraylorBoy/ShadowGas#readme)
 
 ## Install
 
