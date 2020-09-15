@@ -14,8 +14,6 @@
 
 > Stores, Transfers, and Trades, Ethereum Gas Tokens
 
-### 🏠 [Homepage](https://github.com/TraylorBoy/ShadowGas#readme)
-
 ## Install
 
 ```sh
