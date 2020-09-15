@@ -1,5 +1,9 @@
-const { expect } = require('chai');
-const { ethers } = require('ethers');
+const {
+    expect
+} = require('chai');
+const {
+    ethers
+} = require('ethers');
 const bre = require('@nomiclabs/buidler');
 
 // Test on buidlerevm network
@@ -43,7 +47,7 @@ describe('Contract Chi Token', () => {
     describe('Mint', () => {
 
         it('Should mint 20 Chi Tokens and send them to Shadow', async () => {
-            
+
             await chi.connect(addr1).mint(20);
 
             expect(await chi.balanceOf(await addr1.getAddress())).to.equal(20);

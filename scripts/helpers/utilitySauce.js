@@ -1,5 +1,7 @@
 const bre = require('@nomiclabs/buidler');
-const { ethers } = require('ethers');
+const {
+    ethers
+} = require('ethers');
 const fetch = require('node-fetch');
 const Logger = require('./logging');
 require('dotenv').config();
@@ -22,7 +24,7 @@ exports.gasInfo = async () => {
     // Gas Speed can either be one of the below
     // fastest, fast, average, safeLow
     // check https://ethgasstation.info
-    
+
     const gasLimit = bre.shadowConfig.GasLimit;
     const gasPrice = prices[bre.shadowConfig.GasSpeed] / 10;
     const waitTime = prices[`${bre.shadowConfig.GasSpeed}Wait`] * 10; // in minutes

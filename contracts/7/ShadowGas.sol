@@ -35,6 +35,9 @@ contract ShadowGas {
         possessor = msg.sender;
     }
 
+/* -------------------------------------------------------------------------- */
+
+
     /*
 
         Modifiers
@@ -60,6 +63,8 @@ contract ShadowGas {
 
     */
 
+/* -------------------------------------------------------------------------- */
+
     /*
 
         Tank Info
@@ -75,6 +80,9 @@ contract ShadowGas {
     function tankAmount() public view returns (uint) {
         return chi.balanceOf(address(this));
     }
+
+/* -------------------------------------------------------------------------- */
+
 
     /*
 
@@ -97,6 +105,9 @@ contract ShadowGas {
 
         chi.transfer(to, _amount);
     }
+
+/* -------------------------------------------------------------------------- */
+
 
     /*
 
@@ -126,6 +137,9 @@ contract ShadowGas {
         emptyTankTo(_value, to);
     }
 
+
+
+/* -------------------------------------------------------------------------- */
 
     /*
 

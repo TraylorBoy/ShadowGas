@@ -11,7 +11,7 @@ require('dotenv').config();
 // Avg tx burns around 20 chi
 // Limit is 140 per tx
 // Chi uses 0 decimals
-const amountToMint = bre.shadowConfig.RefuelAmount * 1;
+const amountToMint = parseInt(bre.shadowConfig.RefuelAmount);
 
 async function main() {
 
@@ -22,6 +22,8 @@ async function main() {
     Logger.talk(`Wallet Balance: ${Sauce.fromEther((await deployer.getBalance()).toString())}`);
 
     Logger.talk(`Connected to station at: ${ShadowGas.address}`);
+
+    Logger.talk(`Refueling Amount: ${amountToMint}`);
 
     let chiBefore = await Sauce.stationBalance();
 
@@ -37,21 +39,22 @@ async function main() {
     await ShadowGas.refuel(amountToMint, {
         gasLimit,
         gasPrice
-    }).then(tx => {
+    }).then(async (tx) => {
+
+        await Sauce.sleep(15000); // wait for confirmation (check etherscan)
+
+        // Minting successful?
+        let chiAfter = await Sauce.stationBalance();
+
+        if (chiAfter == chiBefore) throw new Error('Chi Balance did not change, possible out of gas error during transaction. Check etherscan! (Hint) Raise Gas Limit');
 
         Logger.talk(`Filled tank with ${amountToMint} chi`);
 
     }).catch(err => {
 
-        console.err(err);
+        console.error(err.message);
+
     });
-
-    // Minting successful?
-    let chiAfter = await Sauce.stationBalance();
-
-    if (chiBefore == chiAfter) {
-        console.error('Chi Balance did not change, possible out of gas error during transaction. Check etherscan! (Hint) Raise Gas Limit');
-    }
 
 }
 

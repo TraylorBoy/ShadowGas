@@ -7,16 +7,17 @@ require('dotenv').config();
 
 const fs = require('fs');
 const execShPromise = require('exec-sh').promise;
-
+const shadowConfig = fs.readFileSync('./shadow.config.json');
+/* -------------------------------------------------------------------------- */
 
 // gives bre access to shadowConfig
 extendEnvironment(bre => {
 
-    const shadowConfig = fs.readFileSync('./shadow.config.json');
-
     bre.shadowConfig = JSON.parse(shadowConfig);
 
 });
+
+/* -------------------------------------------------------------------------- */
 
 /*
 
@@ -27,18 +28,19 @@ extendEnvironment(bre => {
 
 */
 
-// npx buidler stationBalance
+
+// `npx buidler stationBalance`
 task('stationBalance', 'Retrieves amount of chi tokens at contract\'s address')
 
-    .setAction(async bre => {
+    .setAction(async () => {
 
         const tankAmount = async () => {
 
-            const path = './scripts/station/stationBalance.js';
-
             try {
 
-                out = await execShPromise(`npx buidler run ${path}`);
+                const path = './scripts/station/stationBalance.js';
+
+                await execShPromise(`npx buidler run ${path}`);
 
             } catch (error) {
 
@@ -51,20 +53,18 @@ task('stationBalance', 'Retrieves amount of chi tokens at contract\'s address')
 
     });
 
-// npx buidler refuel --amount < RefuelAmount >
-// `$ npx buidler refuel --amount 140`
+// `$ npx buidler refuel`
+// set RefuelAmount in shadow.config
 task('refuel', 'Mints chi tokens')
-    
-    .addParam('amount', 'Amount to mint should be <=140')
 
     .setAction(async (taskArgs, bre) => {
-        
+
         const refuel = async () => {
-            const path = './scripts/station/refuel.js';
 
             try {
+                const path = './scripts/station/refuel.js';
 
-                out = await execShPromise(`npx buidler run ${path}`);
+                await execShPromise(`npx buidler run ${path}`);
 
             } catch (error) {
 
@@ -77,11 +77,39 @@ task('refuel', 'Mints chi tokens')
 
     });
 
+
+// `npx buidler emptyTank`
+// set withdraw amount in shadow.config
+task('emptyTank', 'Withdraws chi tokens from contract')
+
+    .setAction(async (taskArgs) => {
+
+        const emptyTank = async () => {
+
+            try {
+
+                const path = './scripts/station/emptyTank.js';
+
+                await execShPromise(`npx buidler run ${path}`);
+
+            } catch (error) {
+
+                console.error(error.message);
+
+            }
+
+        };
+
+        await emptyTank();
+
+
+    });
+
+
 module.exports = {
     defaultNetwork: 'kovan',
     networks: {
-        buidlerevm: {
-        },
+        buidlerevm: {},
         kovan: {
             url: process.env.KOVAN,
             accounts: [`0x${process.env.PRIVATEKEY}`]
