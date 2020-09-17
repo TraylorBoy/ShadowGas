@@ -1,5 +1,7 @@
 const bre = require('@nomiclabs/buidler');
-const { ethers } = require('ethers');
+const {
+    ethers
+} = require('ethers');
 const {
     Sauce,
     Logger
@@ -14,7 +16,10 @@ async function main() {
 
     Logger.talk(`Wallet Balance: ${Sauce.fromEther((await deployer.getBalance()).toString())}`);
 
-    const { gasPrice, gasLimit } = await Sauce.gasInfo();
+    const {
+        gasPrice,
+        gasLimit
+    } = await Sauce.gasInfo();
 
     const shadowGas = await ShadowGas.deploy({
         gasPrice,

@@ -41,12 +41,12 @@ async function main() {
         gasPrice
     }).then(async (tx) => {
 
-        await Sauce.sleep(15000); // wait for confirmation (check etherscan)
+        await Sauce.sleep(30000); // wait for confirmation (check etherscan)
 
         // Minting successful?
         let chiAfter = await Sauce.stationBalance();
 
-        if (chiAfter == chiBefore) throw new Error('Chi Balance did not change, possible out of gas error during transaction. Check etherscan! (Hint) Raise Gas Limit');
+        if (chiAfter <= chiBefore) throw new Error('Chi Balance did not change, possible out of gas error during transaction. Check etherscan! (Hint) Raise Gas Limit');
 
         Logger.talk(`Filled tank with ${amountToMint} chi`);
 

@@ -22,26 +22,52 @@ async function main() {
 
     const chiBefore = await Sauce.stationBalance();
 
-    if (chiBefore == 0.0) return;
+    if (chiBefore == 0.0 || chiBefore < amountToWithdraw) return;
 
-    Logger.talk(`Emptying tank amount: ${chiBefore}`);
+    let highestBoughtAt = 0;
+    let price = [];
+    let amount = [];
+
+    if (chiBefore != amountToWithdraw) {
+
+        const history = await ShadowGas.getFullHistory();
+
+        price = history[0];
+        amount = history[1];
+
+        Logger.purchaseHistory(price, amount);
+
+        highestBoughtAt = 0;
+
+        for (let i = 0; i < price.length; i++) {
+
+            if (amount[i] >= amountToWithdraw) highestBoughtAt = i;
+        }
+
+        Logger.talk(`Emptying ${amountToWithdraw} chi at ${price[highestBoughtAt] / 1000000000}`);
+    } else {
+        Logger.talk(`Emptying station for ${amountToWithdraw} chi`);
+    }
+
 
     const {
         gasLimit,
         gasPrice
     } = await Sauce.gasInfo();
 
-    await ShadowGas.emptyTank(amountToWithdraw, {
+    await ShadowGas.emptyTank(amountToWithdraw, highestBoughtAt, {
         gasLimit,
         gasPrice
     }).then(async (tx) => {
 
-        await Sauce.sleep(15000); // wait for confirmation (check etherscan)
+        await Sauce.sleep(30000); // wait for confirmation (check etherscan)
 
         const chiAfter = await Sauce.stationBalance();
 
         // Withdraw successful?
-        if (chiAfter == chiBefore) throw new Error('Emptying tank unsuccessful, check etherscan (tx might not have confirmed yet');
+        if (chiAfter >= chiBefore) throw new Error('Emptying tank unsuccessful, check etherscan (tx might not have confirmed yet)');
+
+        Logger.talk(`Emptied tank for ${amountToWithdraw} chi`);
 
     }).catch(err => {
 

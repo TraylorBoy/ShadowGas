@@ -1,5 +1,9 @@
-const { expect } = require('chai');
-const { ethers } = require('ethers');
+const {
+    expect
+} = require('chai');
+const {
+    ethers
+} = require('ethers');
 require('dotenv').config();
 
 const bre = require('@nomiclabs/buidler');
@@ -9,7 +13,7 @@ const bre = require('@nomiclabs/buidler');
 // tx might have not gone through before balance was checked
 
 describe('Contract Shadow Gas', () => {
-    
+
     let ShadowGas;
 
     beforeEach(async () => {
@@ -34,7 +38,7 @@ describe('Contract Shadow Gas', () => {
     });
 
     describe('Refuel', () => {
-        
+
 
         it('Should mint 20 chi tokens at contract\'s address', async () => {
 
