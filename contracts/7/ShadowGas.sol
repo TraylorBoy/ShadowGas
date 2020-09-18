@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.7.0 <0.8.0;
 
+import "../6/ILGT.sol";
+
 interface IGasToken {
     function name (  ) external view returns ( string memory);
     function freeFromUpTo ( address from, uint256 value ) external returns ( uint256 freed );
@@ -26,18 +28,21 @@ contract ShadowGas {
 
     */
 
-    //TODO: GST2
-    IGasToken chi = IGasToken(0x0000000000004946c0e9F43F4Dee607b0eF1fA1c);
-
     address payable possessor;// contract owner
-    mapping(uint => uint) purchaseHistory; // stores amount of tokens purchased and gas price at time of purchase (for trading)
-    uint[] gasPriceAtPurchase;
-    uint totalPurchases;
+    address constant CHI = 0x0000000000004946c0e9F43F4Dee607b0eF1fA1c; // 1inch Chi Token
+    address constant LGT = 0x000000000000C1CB11D5c062901F32D06248CE48; // Liquid Gas Token
+    address constant GST = 0x0000000000b3F879cb30FE243b4Dfee438691c04; // Gas Token
+
+    IGasToken chi = IGasToken(CHI);
+    IGasToken gst = IGasToken(gst);
+    ILGT lgt = ILGT(LGT);
+    
 
     constructor() {
         possessor = msg.sender;
-        totalPurchases = 0;
     }
+
+    receive() external payable {}
 
 /* -------------------------------------------------------------------------- */
 
@@ -54,36 +59,34 @@ contract ShadowGas {
     }
 
     // allows contract to burn chi
-    modifier useGas() {
+    modifier useChi() {
         uint gasStart = gasleft();
         _;
         uint gasSpent = 21000 + gasStart - gasleft() + 16 * msg.data.length;
-        chi.freeFromUpTo(address(this), (gasSpent + 14154) / 41947);
+        chi.free((gasSpent + 14154) / 41947);
+    }
+
+    modifier useLgt() {
+        uint gasStart = gasleft();
+        _;
+        uint gasSpent = (gasStart - gasleft() + 55000) / 41300;
+
+        uint buyCost = lgt.getEthToTokenOutputPrice(gasSpent);
+
+        if (buyCost < ((18145 * gasSpent) - 24000) * tx.gasprice) {
+            lgt.buyAndFree(gasSpent, block.timestamp, address(this));
+        }
     }
 
 /* -------------------------------------------------------------------------- */
 
     /*
 
-        Events
+        TODO: Events
 
     */
-
-    event TankEmptied(address sender, uint amount, uint price);
-    event Refuled(address sender, uint amount, uint price);
 
 /* -------------------------------------------------------------------------- */
-
-    /*
-
-        Tank Info
-        ---------------------
-        Gas Token Efficiencies
-        y = 15000 * x / (20065 + 5065 * x) // GST1
-        y = 24000 * x / (35974 + 6689 * x) // GST2
-        y = 24000 * x / (35678 + 6053 * x) // CHI
-    
-    */
 
     /*
 
@@ -91,48 +94,35 @@ contract ShadowGas {
 
     */
 
-    // chi balance
-    function tankAmount() public view returns (uint) {
+    function tankChi() public view returns (uint) {
         return chi.balanceOf(address(this));
     }
 
 
-
-    function updateHistory(uint _value, uint price) internal shadowPossession {
-
-        // store purchase price and amount of tokens that were purchased
-        gasPriceAtPurchase.push(price);
-        purchaseHistory[gasPriceAtPurchase[totalPurchases]] += _value;
-        totalPurchases++;
-
+    function tankLgt() public view returns (uint) {
+        return lgt.balanceOf(address(this));
     }
 
-    // uses gas tokens bought at higher prices first
-    function removeFromHistory(uint amount, uint price) internal shadowPossession {
-        require(purchaseHistory[gasPriceAtPurchase[price]] >= amount, "Not enough tokens purchased at price to remove amount from");
+    function refuelChi(uint _amount) public shadowPossession returns (bool) {
+        require(_amount > 0, "Value may not be 0, (Hint) Chi tokens require 0 decimal places");
 
-        if (purchaseHistory[gasPriceAtPurchase[price]] == amount) {
-            delete purchaseHistory[gasPriceAtPurchase[price]];
-            delete gasPriceAtPurchase[price];
-                
-            totalPurchases--;
-        }
+        chi.mint(_amount);
 
-        if (purchaseHistory[gasPriceAtPurchase[price]] > amount) {
-            purchaseHistory[gasPriceAtPurchase[price]] -= amount;
-        }
+        require(chi.balanceOf(address(this)) >= _amount, "Minting chi failed");
 
+        return true;
     }
 
-    function emptyHistory() internal shadowPossession {
+    function refuelLgt(uint _amount) public shadowPossession returns (bool) {
+        require(_amount > 0, "Value may not be 0");
 
-        for (uint i = 0; i < totalPurchases; i++) {
-            delete purchaseHistory[gasPriceAtPurchase[i]];
-            delete gasPriceAtPurchase[i];
-        }
+        lgt.mint(_amount);
 
-        totalPurchases = 0;
+        require(lgt.balanceOf(address(this)) >= _amount, "Minting lgt failed");
+
+        return true;
     }
+
 
 /* -------------------------------------------------------------------------- */
 
@@ -143,79 +133,89 @@ contract ShadowGas {
 
     */
 
-    // transfer chi `_amount` back to possessor
-    function emptyTank(uint _amount, uint price) public shadowPossession {
+    function emptyChiTank(uint _amount) public shadowPossession useLgt returns (bool) {
         require(chi.balanceOf(address(this)) >= _amount, "Tank does not have that much to empty");
         require(chi.approve(msg.sender, _amount), "Failed to approve chi amount");
 
-        if (chi.balanceOf(address(this)) == _amount) {
+        chi.transfer(msg.sender, _amount);
 
-            emptyHistory();
-
-            chi.transfer(msg.sender, _amount);
-        } else {
-
-            removeFromHistory(_amount, price);
-
-            chi.transfer(msg.sender, _amount);
-        }
-
-        emit TankEmptied(msg.sender, _amount, price);
-
+        return true;
     }
 
-    // transfer chi `_amount` to `address`
-    // does not modify purchaseHistory
-    function emptyTankTo(uint _amount, address to) public shadowPossession useGas {
+    function emptyLgtTank(uint _amount) public shadowPossession useChi returns (bool) {
+        require(lgt.balanceOf(address(this)) >= _amount, "Tank does not have that much to empty");
+        require(lgt.approve(msg.sender, _amount), "Failed to approve chi amount");
+
+        lgt.transfer(msg.sender, _amount);
+
+        return true;
+    }
+
+    function emptyChiTankTo(uint _amount, address _to) public shadowPossession useLgt returns (bool) {
         require(chi.balanceOf(address(this)) >= _amount, "Tank does not have that much to empty");
-        require(chi.approve(to, _amount), "Failed to approve chi amount");
+        require(chi.approve(_to, _amount), "Failed to approve chi amount");
 
-        chi.transfer(to, _amount);
+        chi.transfer(_to, _amount);
+
+        return true;
     }
 
-    // mint chi and store in contract
-    function refuel(uint _value) public shadowPossession {
-        require(_value > 0, "Value may not be 0, (Hint) Chi tokens require 0 decimal places");
+    function emptyLgtTankTo(uint _amount, address _to) public shadowPossession useChi returns (bool) {
+        require(lgt.balanceOf(address(this)) >= _amount, "Tank does not have that much to empty");
+        require(lgt.approve(_to, _amount), "Failed to approve chi amount");
 
-        updateHistory(_value, tx.gasprice);
+        lgt.transfer(_to, _amount);
 
-        chi.mint(_value);
-
-        emit Refuled(msg.sender, _value, tx.gasprice);
-    }
-
-    // mint chai and transfer
-    // does not modify purchaseHistory
-    function refuelAt(uint _value, address to) public shadowPossession useGas {
-        require(_value > 0, "Value may not be 0, (Hint) Chi tokens require 0 decimal places");
-
-        chi.mint(_value);
-        emptyTankTo(_value, to);
+        return true;
     }
 
 /* -------------------------------------------------------------------------- */
 
     /*
 
-        TODO: Trade
-
+        Trade
+        
     */
 
-    // retrieves purchaseHistory
-    function getFullHistory() public view shadowPossession returns (uint[] memory, uint[] memory) {
+    // Buy tokens from uniswap -> burn
+    function lgtTradeBuyUni(uint _amount, uint _ethSent) public payable shadowPossession useChi returns (uint) {
+        require(_amount > 0, "Trade amount must be greater than 0");
+        require(_ethSent <= msg.value);
+        
+        uint gasStart = gasleft();
+        
+        uint gasSpent = (gasStart - gasleft() + 55000) / 41300;
 
-        uint[] memory amountBought = new uint[](totalPurchases);
+        uint buyCost = lgt.getEthToTokenOutputPrice(gasSpent);
 
-        for (uint i = 0; i < totalPurchases; i++) {
-            amountBought[i] = purchaseHistory[gasPriceAtPurchase[i]];
+        if (buyCost < ((18145 * gasSpent) - 24000) * tx.gasprice) {
+            return lgt.buyAndFree{value: msg.value - _ethSent}(gasSpent, block.timestamp, address(this));
+        } else {
+            return 0;
         }
-
-        return (gasPriceAtPurchase, amountBought);
 
     }
 
-    
+    // Mint tokens -> sell on uniswap
+    function lgtTradeSellUni(uint _amount, uint _ethSent) public payable shadowPossession useChi returns (uint) {
+        require(_amount > 0, "Trade amount must be greater than 0");
+        require(_ethSent <= msg.value);
+        
 
+        uint gasStart = gasleft();
+        
+        uint gasSpent = (gasStart - gasleft() + 55000) / 41300;
 
+        uint buyCost = lgt.getEthToTokenOutputPrice(gasSpent + _amount);
+
+        if (buyCost < ((18145 * (gasSpent + _amount)) - 24000) * tx.gasprice) {
+            return lgt.mintToSell((gasSpent + _amount), _ethSent, block.timestamp);
+        } else {
+            return 0;
+        }
+
+    }
+
+    // TODO: Trade Chi & GST on uniswap
 
 }
