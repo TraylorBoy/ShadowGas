@@ -26,7 +26,8 @@ contract ShadowGas {
 
     */
 
-    IGasToken chi = IGasToken(0x0000000000004946c0e9F43F4Dee607b0eF1fA1c); // include gst1/gst2?
+    //TODO: GST2
+    IGasToken chi = IGasToken(0x0000000000004946c0e9F43F4Dee607b0eF1fA1c);
 
     address payable possessor;// contract owner
     mapping(uint => uint) purchaseHistory; // stores amount of tokens purchased and gas price at time of purchase (for trading)
@@ -60,7 +61,43 @@ contract ShadowGas {
         chi.freeFromUpTo(address(this), (gasSpent + 14154) / 41947);
     }
 
-    //TODO: Control history by transaction number
+/* -------------------------------------------------------------------------- */
+
+    /*
+
+        Events
+
+    */
+
+    event TankEmptied(address sender, uint amount, uint price);
+    event Refuled(address sender, uint amount, uint price);
+
+/* -------------------------------------------------------------------------- */
+
+    /*
+
+        Tank Info
+        ---------------------
+        Gas Token Efficiencies
+        y = 15000 * x / (20065 + 5065 * x) // GST1
+        y = 24000 * x / (35974 + 6689 * x) // GST2
+        y = 24000 * x / (35678 + 6053 * x) // CHI
+    
+    */
+
+    /*
+
+        Store
+
+    */
+
+    // chi balance
+    function tankAmount() public view returns (uint) {
+        return chi.balanceOf(address(this));
+    }
+
+
+
     function updateHistory(uint _value, uint price) internal shadowPossession {
 
         // store purchase price and amount of tokens that were purchased
@@ -77,7 +114,7 @@ contract ShadowGas {
         if (purchaseHistory[gasPriceAtPurchase[price]] == amount) {
             delete purchaseHistory[gasPriceAtPurchase[price]];
             delete gasPriceAtPurchase[price];
-            
+                
             totalPurchases--;
         }
 
@@ -95,30 +132,6 @@ contract ShadowGas {
         }
 
         totalPurchases = 0;
-    }
-
-    /*
-
-        TODO: Events
-
-    */
-
-/* -------------------------------------------------------------------------- */
-
-    /*
-
-        Tank Info
-        ---------------------
-        Gas Token Efficiencies
-        y = 15000 * x / (20065 + 5065 * x) // GST1
-        y = 24000 * x / (35974 + 6689 * x) // GST2
-        y = 24000 * x / (35678 + 6053 * x) // CHI
-    
-    */
-
-    // chi balance
-    function tankAmount() public view returns (uint) {
-        return chi.balanceOf(address(this));
     }
 
 /* -------------------------------------------------------------------------- */
@@ -147,25 +160,18 @@ contract ShadowGas {
             chi.transfer(msg.sender, _amount);
         }
 
+        emit TankEmptied(msg.sender, _amount, price);
+
     }
 
     // transfer chi `_amount` to `address`
     // does not modify purchaseHistory
-    function emptyTankTo(uint _amount, address to) public shadowPossession {
+    function emptyTankTo(uint _amount, address to) public shadowPossession useGas {
         require(chi.balanceOf(address(this)) >= _amount, "Tank does not have that much to empty");
         require(chi.approve(to, _amount), "Failed to approve chi amount");
 
         chi.transfer(to, _amount);
     }
-
-/* -------------------------------------------------------------------------- */
-
-
-    /*
-
-        Store
-
-    */
 
     // mint chi and store in contract
     function refuel(uint _value) public shadowPossession {
@@ -174,18 +180,18 @@ contract ShadowGas {
         updateHistory(_value, tx.gasprice);
 
         chi.mint(_value);
+
+        emit Refuled(msg.sender, _value, tx.gasprice);
     }
 
     // mint chai and transfer
     // does not modify purchaseHistory
-    function refuelAt(uint _value, address to) public shadowPossession {
+    function refuelAt(uint _value, address to) public shadowPossession useGas {
         require(_value > 0, "Value may not be 0, (Hint) Chi tokens require 0 decimal places");
 
         chi.mint(_value);
         emptyTankTo(_value, to);
     }
-
-
 
 /* -------------------------------------------------------------------------- */
 
@@ -207,5 +213,9 @@ contract ShadowGas {
         return (gasPriceAtPurchase, amountBought);
 
     }
+
+    
+
+
 
 }
