@@ -68,7 +68,7 @@ describe('Store', () => {
             });
 
             const balAfter = parseInt(await ShadowGas.tankChi());
-            
+
             expect(balAfter).to.equal(balBefore + 1);
 
         });
@@ -98,7 +98,7 @@ describe('Store', () => {
             });
 
             const balAfter = parseInt(await ShadowGas.tankLgt());
-            
+
             expect(balAfter).to.equal(balBefore + 1);
 
         });

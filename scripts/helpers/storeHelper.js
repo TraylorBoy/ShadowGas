@@ -24,8 +24,8 @@ exports.tankBalances = () => {
 
         try {
 
-            const chiBalance = await ShadowGas.tankChi();
-            const lgtBalance = await ShadowGas.tankLgt();
+            const chiBalance = parseInt(await ShadowGas.tankChi());
+            const lgtBalance = parseInt(await ShadowGas.tankLgt());
 
             Logger.talk(`Chi Balance: ${chiBalance}`);
             Logger.talk(`Lgt Balance: ${lgtBalance}`);
@@ -50,7 +50,7 @@ exports.tankChi = () => {
 
         try {
 
-            const chiBalance = await ShadowGas.tankChi();
+            const chiBalance = parseInt(await ShadowGas.tankChi());
 
             Logger.talk(`Chi Balance: ${chiBalance}`);
 
@@ -71,7 +71,7 @@ exports.tankLgt = () => {
 
         try {
 
-            const lgtBalance = await ShadowGas.tankLgt();
+            const lgtBalance = parseInt(await ShadowGas.tankLgt());
 
             Logger.talk(`Lgt Balance: ${lgtBalance}`);
 
@@ -93,6 +93,8 @@ exports.refuelChi = (amount) => {
 
         try {
 
+            const balBefore = await this.tankChi();
+
             const {
                 gasLimit,
                 gasPrice
@@ -104,15 +106,18 @@ exports.refuelChi = (amount) => {
             }).then(async tx => {
 
                 await tx.wait();
-                console.log(tx);
-
-                Logger.talk(`Refueled ${amount} CHI`);
-
-                resolve(true);
 
             }).catch(err => {
                 throw new Error(err.message);
             });
+
+            const balAfter = await this.tankChi();
+
+            if (balAfter <= balBefore) throw new Error('CHI Balance did not change. Possible out of gas error, check etherscan or raise gas limit');
+
+            Logger.talk(`Refueled ${amount} CHI`);
+
+            resolve(true);
 
         } catch (error) {
             reject(error);
@@ -128,6 +133,10 @@ exports.refuelLgt = (amount) => {
 
         try {
 
+            const balBefore = await this.tankLgt();
+
+            Logger.talk(`Refueling ${amount} LGT`);
+
             const {
                 gasLimit,
                 gasPrice
@@ -139,15 +148,18 @@ exports.refuelLgt = (amount) => {
             }).then(async tx => {
 
                 await tx.wait();
-                console.log(tx);
-
-                Logger.talk(`Refueled ${amount} LGT`);
-
-                resolve(true);
 
             }).catch(err => {
                 throw new Error(err.message);
             });
+
+            const balAfter = await this.tankLgt();
+
+            if (balAfter <= balBefore) throw new Error('LGT Balance did not change. Possible out of gas error, check etherscan or raise gas limit');
+
+            Logger.talk(`Refueled ${amount} LGT`);
+
+            resolve(true);
 
         } catch (error) {
             reject(error);
