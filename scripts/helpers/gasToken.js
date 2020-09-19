@@ -4,3 +4,10 @@ exports.chi = {
     name: "Chi Token",
     decimals: 0
 };
+
+exports.lgt = {
+    address: "0x000000000000C1CB11D5c062901F32D06248CE48",
+    symbol: "LGT",
+    name: "Liquid Gas Token",
+    decimals: 0
+};

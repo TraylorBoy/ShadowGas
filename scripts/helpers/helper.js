@@ -1,11 +1,20 @@
-const Sauce = require('./utilitySauce');
-const Logger = require('./logging');
+const Logger = require('./logHelper');
 const GasToken = require('./gasToken');
-const Oracle = require('./oracle');
+const GasHelper = require('./gasHelper');
+const Store = require('./storeHelper');
+
+const Sleep = async (len) => {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve(true);
+        }, len);
+    });
+};
 
 module.exports = {
-    Sauce,
     Logger,
     GasToken,
-    Oracle
+    GasHelper,
+    Store,
+    Sleep
 };

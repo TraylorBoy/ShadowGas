@@ -20,6 +20,8 @@ interface IGasToken {
     function allowance ( address owner, address spender ) external view returns ( uint256 remaining );
 }
 
+// TODO: Add functionality for GST
+
 contract ShadowGas {
 
     /*
@@ -36,7 +38,6 @@ contract ShadowGas {
     IGasToken chi = IGasToken(CHI);
     IGasToken gst = IGasToken(gst);
     ILGT lgt = ILGT(LGT);
-    
 
     constructor() {
         possessor = msg.sender;
@@ -58,7 +59,6 @@ contract ShadowGas {
         _;
     }
 
-    // allows contract to burn chi
     modifier useChi() {
         uint gasStart = gasleft();
         _;
@@ -82,9 +82,14 @@ contract ShadowGas {
 
     /*
 
-        TODO: Events
+        Events
 
     */
+
+    event LgtRefueled(uint _amount, address _refueler, uint _lgtBalance);
+    event LgtEmptied(uint _amount, address _emptier, uint _lgtBalance);
+    event ChiRefueled(uint _amount, address _refueler, uint _chiBalance);
+    event ChiEmptied(uint _amount, address _emptier, uint _chiBalance);
 
 /* -------------------------------------------------------------------------- */
 
@@ -110,6 +115,8 @@ contract ShadowGas {
 
         require(chi.balanceOf(address(this)) >= _amount, "Minting chi failed");
 
+        emit ChiRefueled(_amount, msg.sender, chi.balanceOf(address(this)));
+
         return true;
     }
 
@@ -119,6 +126,8 @@ contract ShadowGas {
         lgt.mint(_amount);
 
         require(lgt.balanceOf(address(this)) >= _amount, "Minting lgt failed");
+
+        emit LgtRefueled(_amount, msg.sender, lgt.balanceOf(address(this)));
 
         return true;
     }
@@ -139,6 +148,8 @@ contract ShadowGas {
 
         chi.transfer(msg.sender, _amount);
 
+        emit ChiEmptied(_amount, msg.sender, chi.balanceOf(address(this)));
+
         return true;
     }
 
@@ -147,6 +158,8 @@ contract ShadowGas {
         require(lgt.approve(msg.sender, _amount), "Failed to approve chi amount");
 
         lgt.transfer(msg.sender, _amount);
+
+        emit LgtEmptied(_amount, msg.sender, lgt.balanceOf(address(this)));
 
         return true;
     }

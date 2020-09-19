@@ -3,7 +3,7 @@ const {
     ethers
 } = require('ethers');
 const {
-    Sauce,
+    GasHelper,
     Logger
 } = require('./helpers/helper');
 require('dotenv').config();
@@ -14,12 +14,12 @@ async function main() {
 
     const ShadowGas = await bre.ethers.getContractFactory('ShadowGas');
 
-    Logger.talk(`Wallet Balance: ${Sauce.fromEther((await deployer.getBalance()).toString())}`);
+    Logger.talk(`Wallet Balance: ${ethers.utils.formatEther((await deployer.getBalance()).toString())}`);
 
     const {
         gasPrice,
         gasLimit
-    } = await Sauce.gasInfo();
+    } = await GasHelper.ethGasStation();
 
     const shadowGas = await ShadowGas.deploy({
         gasPrice,
