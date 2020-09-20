@@ -15,9 +15,9 @@ async function main() {
 
     if (await Store.refuelChi(parseInt(bre.shadowConfig.RefuelChiAmt))) {
 
-        const result = timer.stop('refuelChi');
+        const result = (timer.stop('refuelChi').time / 1000).toFixed(0);
 
-        Logger.talk(`Refueled in ${result.time} milliseconds`);
+        Logger.talk(`Refueled in ${result} seconds`);
     }
 
 }

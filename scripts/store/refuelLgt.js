@@ -15,9 +15,9 @@ async function main() {
 
     if (await Store.refuelLgt(parseInt(bre.shadowConfig.RefuelLgtAmt))) {
 
-        const result = timer.stop('refuelLgt');
+        const result = (timer.stop('refuelLgt').time / 1000).toFixed(0);
 
-        Logger.talk(`Refueled in ${result.time} milliseconds`);
+        Logger.talk(`Refueled in ${result} seconds`);
     }
 
 }

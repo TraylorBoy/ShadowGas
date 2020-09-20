@@ -53,7 +53,6 @@ task('walletBalance', 'Retrieves the amount of ether at the address inputted')
 
     });
 
-
 // `npx buidler deploy`
 task('deploy', 'Deploys ShadowGas to default network')
 
@@ -79,6 +78,107 @@ task('deploy', 'Deploys ShadowGas to default network')
 
     });
 
+// npx buidler refuel --token < Chi/Lgt >
+task('refuel', 'Mints amount of gas tokens defined in shadow.config and stores them at contract\'s address')
+
+    .addParam('token', 'Token to mint')
+
+    .setAction(async (taskArgs) => {
+
+        const refuel = async () => {
+
+            try {
+
+                const path = `./scripts/store/refuel${(taskArgs.token).toString()}.js`;
+
+                await execShPromise(`npx buidler run ${path}`);
+
+            } catch (error) {
+
+                console.error(error.message);
+
+            }
+
+        };
+
+        await refuel();
+
+    });
+
+// npx buidler tank --token < Chi/Lgt >
+task('tank', 'Deploys ShadowGas to default network')
+
+    .addParam('token', 'Token to retrieve balance for')
+
+    .setAction(async (taskArgs) => {
+
+        const tank = async () => {
+
+            try {
+
+                const path = `./scripts/store/tank${(taskArgs.token).toString()}.js`;
+
+                await execShPromise(`npx buidler run ${path}`);
+
+            } catch (error) {
+
+                console.error(error.message);
+
+            }
+
+        };
+
+        await tank();
+
+    });
+
+task('deploy', 'Deploys ShadowGas to default network')
+
+    .setAction(async () => {
+
+        const deploy = async () => {
+
+            try {
+
+                const path = './scripts/deploy.js';
+
+                await execShPromise(`npx buidler run ${path}`);
+
+            } catch (error) {
+
+                console.error(error.message);
+
+            }
+
+        };
+
+        await deploy();
+
+    });
+
+task('deploy', 'Deploys ShadowGas to default network')
+
+    .setAction(async () => {
+
+        const deploy = async () => {
+
+            try {
+
+                const path = './scripts/deploy.js';
+
+                await execShPromise(`npx buidler run ${path}`);
+
+            } catch (error) {
+
+                console.error(error.message);
+
+            }
+
+        };
+
+        await deploy();
+
+    });
 
 module.exports = {
     defaultNetwork: 'kovan',
