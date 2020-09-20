@@ -132,15 +132,18 @@ task('tank', 'Deploys ShadowGas to default network')
 
     });
 
-task('deploy', 'Deploys ShadowGas to default network')
+// npx buidler empty --token < Chi/Lgt >
+task('empty', 'Transfers tokens from contract to possessor')
 
-    .setAction(async () => {
+    .addParam('token', 'Token to transfer')
 
-        const deploy = async () => {
+    .setAction(async (taskArgs) => {
+
+        const empty = async () => {
 
             try {
 
-                const path = './scripts/deploy.js';
+                const path = `./scripts/transfer/empty${(taskArgs.token).toString()}.js`;
 
                 await execShPromise(`npx buidler run ${path}`);
 
@@ -152,19 +155,22 @@ task('deploy', 'Deploys ShadowGas to default network')
 
         };
 
-        await deploy();
+        await empty();
 
     });
 
-task('deploy', 'Deploys ShadowGas to default network')
+// npx buidler emptyTo --token < Chi/Lgt >
+task('emptyTo', 'Transfers tokens from contract to address')
 
-    .setAction(async () => {
+    .addParam('token', 'Token to transfer')
 
-        const deploy = async () => {
+    .setAction(async (taskArgs) => {
+
+        const emptyTo = async () => {
 
             try {
 
-                const path = './scripts/deploy.js';
+                const path = `./scripts/transfer/empty${(taskArgs.token).toString()}To.js`;
 
                 await execShPromise(`npx buidler run ${path}`);
 
@@ -176,7 +182,7 @@ task('deploy', 'Deploys ShadowGas to default network')
 
         };
 
-        await deploy();
+        await emptyTo();
 
     });
 

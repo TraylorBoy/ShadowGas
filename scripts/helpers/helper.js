@@ -2,6 +2,7 @@ const Logger = require('./logHelper');
 const GasToken = require('./gasToken');
 const GasHelper = require('./gasHelper');
 const Store = require('./storeHelper');
+const Transfer = require('./transferHelper');
 
 const Sleep = async (len) => {
     return new Promise((resolve) => {
@@ -16,5 +17,6 @@ module.exports = {
     GasToken,
     GasHelper,
     Store,
+    Transfer,
     Sleep
 };
