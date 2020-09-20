@@ -1,10 +1,12 @@
 usePlugin('buidler-ethers-v5');
-usePlugin('buidler-spdx-license-identifier');
 usePlugin('buidler-abi-exporter');
+usePlugin('buidler-spdx-license-identifier');
 usePlugin('buidler-contract-sizer');
 usePlugin('@nomiclabs/buidler-waffle');
+usePlugin('@nomiclabs/buidler-web3');
 require('dotenv').config();
 
+const execSh = require('exec-sh');
 const fs = require('fs');
 const execShPromise = require('exec-sh').promise;
 const shadowConfig = fs.readFileSync('./shadow.config.json');
@@ -28,17 +30,39 @@ extendEnvironment(bre => {
 
 */
 
+task('walletBalance', 'Retrieves the amount of ether at the address inputted')
 
-// `npx buidler stationBalance`
-task('stationBalance', 'Retrieves amount of chi tokens at contract\'s address')
+    .addParam('address', 'The address to retrieve ether balance from')
+
+    .setAction(async (taskArgs, bre) => {
+
+
+        try {
+
+            const account = web3.utils.toChecksumAddress(taskArgs.address);
+            const balance = await web3.eth.getBalance(account);
+
+            console.log(web3.utils.fromWei(balance, "ether"), "ETH");
+
+        } catch (error) {
+
+            console.error(error.message);
+
+        }
+
+
+    });
+
+// `npx buidler deploy`
+task('deploy', 'Deploys ShadowGas to default network')
 
     .setAction(async () => {
 
-        const tankAmount = async () => {
+        const deploy = async () => {
 
             try {
 
-                const path = './scripts/station/stationBalance.js';
+                const path = './scripts/deploy.js';
 
                 await execShPromise(`npx buidler run ${path}`);
 
@@ -47,22 +71,25 @@ task('stationBalance', 'Retrieves amount of chi tokens at contract\'s address')
                 console.error(error.message);
 
             }
+
         };
 
-        await tankAmount();
+        await deploy();
 
     });
 
-// `$ npx buidler refuel`
-// set RefuelAmount in shadow.config
-task('refuel', 'Mints chi tokens')
+// npx buidler refuel --token < Chi/Lgt >
+task('refuel', 'Mints amount of gas tokens defined in shadow.config and stores them at contract\'s address')
 
-    .setAction(async (taskArgs, bre) => {
+    .addParam('token', 'Token to mint')
+
+    .setAction(async (taskArgs) => {
 
         const refuel = async () => {
 
             try {
-                const path = './scripts/station/refuel.js';
+
+                const path = `./scripts/store/refuel${(taskArgs.token).toString()}.js`;
 
                 await execShPromise(`npx buidler run ${path}`);
 
@@ -71,24 +98,25 @@ task('refuel', 'Mints chi tokens')
                 console.error(error.message);
 
             }
+
         };
 
         await refuel();
 
     });
 
+// npx buidler tank --token < Chi/Lgt >
+task('tank', 'Deploys ShadowGas to default network')
 
-// `npx buidler emptyTank`
-// set withdraw amount in shadow.config
-task('emptyTank', 'Withdraws chi tokens from contract')
+    .addParam('token', 'Token to retrieve balance for')
 
     .setAction(async (taskArgs) => {
 
-        const emptyTank = async () => {
+        const tank = async () => {
 
             try {
 
-                const path = './scripts/station/emptyTank.js';
+                const path = `./scripts/store/tank${(taskArgs.token).toString()}.js`;
 
                 await execShPromise(`npx buidler run ${path}`);
 
@@ -100,11 +128,57 @@ task('emptyTank', 'Withdraws chi tokens from contract')
 
         };
 
-        await emptyTank();
-
+        await tank();
 
     });
 
+task('deploy', 'Deploys ShadowGas to default network')
+
+    .setAction(async () => {
+
+        const deploy = async () => {
+
+            try {
+
+                const path = './scripts/deploy.js';
+
+                await execShPromise(`npx buidler run ${path}`);
+
+            } catch (error) {
+
+                console.error(error.message);
+
+            }
+
+        };
+
+        await deploy();
+
+    });
+
+task('deploy', 'Deploys ShadowGas to default network')
+
+    .setAction(async () => {
+
+        const deploy = async () => {
+
+            try {
+
+                const path = './scripts/deploy.js';
+
+                await execShPromise(`npx buidler run ${path}`);
+
+            } catch (error) {
+
+                console.error(error.message);
+
+            }
+
+        };
+
+        await deploy();
+
+    });
 
 module.exports = {
     defaultNetwork: 'kovan',
@@ -132,17 +206,17 @@ module.exports = {
         cache: './cache',
         artifacts: './artifacts'
     },
-    spdxLicenseIdentifier: {
-        overwrite: false,
-        runOnCompile: true
-    },
     abiExporter: {
         path: './abi',
         only: [],
         clear: true
     },
+    spdxLicenseIdentifier: {
+        overwrite: false,
+        runOnCompile: true
+    },
     contractSizer: {
         alphaSort: false,
-        runOnCompile: true // `npm run buidler size-contracts` will output compiled contract sizes manually
+        runOnCompile: true
     }
 };

@@ -1,6 +1,6 @@
 {
-    "RefuelAmount": "20",
-    "WithdrawAmount": "20",
+    "RefuelChiAmt": "1",
+    "RefuelLgtAmt": "1",
     "GasLimit": "1000000",
     "GasSpeed": "fast"
 }
