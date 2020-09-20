@@ -132,6 +132,7 @@ task('tank', 'Deploys ShadowGas to default network')
 
     });
 
+// npx buidler empty --token < Chi/Lgt >
 task('empty', 'Transfers tokens from contract to possessor')
 
     .addParam('token', 'Token to transfer')
@@ -158,6 +159,7 @@ task('empty', 'Transfers tokens from contract to possessor')
 
     });
 
+// npx buidler emptyTo --token < Chi/Lgt >
 task('emptyTo', 'Transfers tokens from contract to address')
 
     .addParam('token', 'Token to transfer')
