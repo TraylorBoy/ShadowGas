@@ -15,7 +15,7 @@
 > Stores, Transfers, and Trades, Ethereum Gas Tokens
 
 ## Features
--Stores 1Inch Chi Tokens and Liquid Gas Tokens
+Stores 1Inch Chi Tokens and Liquid Gas Tokens
 
 *Transfers, Trades and GST2 functionality are in development*
 
@@ -106,6 +106,8 @@ https://ethgasstation.info/
 https://1inch.exchange/#/faq/everything-you-wanted-to-know-about-chi-gastoken
 
 https://github.com/matnad/liquid-gas-token
+
+https://buidler.dev/
 
 ## Author
 
