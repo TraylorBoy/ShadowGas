@@ -15,9 +15,9 @@
 > Stores, Transfers, and Trades, Ethereum Gas Tokens
 
 ## Features
-Stores 1Inch Chi Tokens and Liquid Gas Tokens
+Stores and Transfers 1Inch Chi Tokens and Liquid Gas Tokens
 
-*Transfers, Trades and GST2 functionality are in development*
+*Working on Trading functionality and GST2 integration*
 
 ## Install
 
@@ -45,6 +45,10 @@ ETH_GAS_STATION="" - EthGasStation API Key
 ```sh
 `RefuelChiAmt` - Mint Chi Amount
 `RefuelLgtAmt` - Mint Lgt Amount
+`EmptyChiAmt` - Transfer Chi Amount
+`EmptyLgtAmt` - Transfer Lgt Amount
+`EmptyChiTo` - Address to transfer Chi to
+`EmptyLgtTo` - Address to transfer Lgt to
 `GasLimit` - Gas Limit
 `GasSpeed` - Gas Speed (fast, slow) 
 ```
@@ -94,11 +98,33 @@ npx buidler tank --token <GAS_TOKEN>
 
 Retrieves Chi or Lgt token balance at contract's address
 
+## Transfer
+
+*`<GAS_TOKEN>` should be either **Chi** or **Lgt***
+
+### Empty
+```sh
+npx buidler empty --token <GAS_TOKEN>
+```
+
+Sends Chi or Lgt from contract to possessor *(contract owner)*
+
+### EmptyTo
+```sh
+npx buidler emptyTo --token <GAS_TOKEN>
+```
+
+Sends Chi or Lgt from contract to address *(modify in shadow.config.js)*
+
 ## Run tests
 
 ```sh
 npx buidler test
 ```
+
+Will test contract functions which should all pass
+
+## TODO: Examples
 
 ## Resources
 https://ethgasstation.info/
