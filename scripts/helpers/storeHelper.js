@@ -95,6 +95,8 @@ exports.refuelChi = (amount) => {
 
             const balBefore = await this.tankChi();
 
+            Logger.talk(`Refueling ${amount} CHI`);
+
             const {
                 gasLimit,
                 gasPrice
