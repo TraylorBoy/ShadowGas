@@ -50,7 +50,7 @@ ETH_GAS_STATION="" - EthGasStation API Key
 `EmptyChiTo` - Address to transfer Chi to
 `EmptyLgtTo` - Address to transfer Lgt to
 `GasLimit` - Gas Limit
-`GasSpeed` - Gas Speed (fast, slow) 
+`GasSpeed` - Gas Speed ("fast", "average", "slow") 
 ```
 Gas Price is retrieved from https://ethgasstation.info/
 

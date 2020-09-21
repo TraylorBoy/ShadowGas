@@ -1,6 +1,6 @@
 pragma solidity >=0.6.7;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "./IERC20.sol";
 
 interface ILiquidERC20 is IERC20 {
     // Price Query Functions
