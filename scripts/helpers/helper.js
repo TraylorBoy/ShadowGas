@@ -1,8 +1,10 @@
 const Logger = require('./logHelper');
 const GasToken = require('./gasToken');
-const GasHelper = require('./gasHelper');
+const Gas = require('./gasHelper');
 const Store = require('./storeHelper');
 const Transfer = require('./transferHelper');
+const Trade = require('./tradeHelper');
+const Oracle = require('./oracleHelper');
 
 const Sleep = async (len) => {
     return new Promise((resolve) => {
@@ -15,8 +17,10 @@ const Sleep = async (len) => {
 module.exports = {
     Logger,
     GasToken,
-    GasHelper,
+    Gas,
     Store,
     Transfer,
+    Trade,
+    Oracle,
     Sleep
 };

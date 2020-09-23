@@ -2,7 +2,7 @@ const bre = require('@nomiclabs/buidler');
 const {
     ethers
 } = require('ethers');
-const GasHelper = require('./gasHelper');
+const Gas = require('./gasHelper');
 const Logger = require('./logHelper');
 require('dotenv').config();
 
@@ -24,7 +24,7 @@ exports.emptyChiTank = async (amount) => {
                 const {
                     gasLimit,
                     gasPrice
-                } = await GasHelper.ethGasStation();
+                } = await Gas.ethGasStation();
 
                 await ShadowGas.emptyChiTank(amount, {
                     gasLimit,
@@ -89,7 +89,7 @@ exports.emptyChiTankTo = async (amount, address) => {
                 const {
                     gasLimit,
                     gasPrice
-                } = await GasHelper.ethGasStation();
+                } = await Gas.ethGasStation();
 
                 await ShadowGas.emptyChiTankTo(amount, address, {
                     gasLimit,
@@ -154,7 +154,7 @@ exports.emptyLgtTank = async (amount) => {
                 const {
                     gasLimit,
                     gasPrice
-                } = await GasHelper.ethGasStation();
+                } = await Gas.ethGasStation();
 
                 await ShadowGas.emptyLgtTank(amount, {
                     gasLimit,
@@ -220,7 +220,7 @@ exports.emptyLgtTankTo = async (amount, address) => {
                 const {
                     gasLimit,
                     gasPrice
-                } = await GasHelper.ethGasStation();
+                } = await Gas.ethGasStation();
 
                 await ShadowGas.emptyLgtTankTo(amount, address, {
                     gasLimit,

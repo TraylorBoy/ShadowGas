@@ -209,6 +209,7 @@ contract ShadowGas {
     }
 
     // LGT BUY LOW SELL HIGH
+    // !!!NOT TESTED USE AT YOUR OWN RISK!!!
     function lgtBuyLow(uint _amount) public payable shadowPossession returns (uint) {
 
         lgt.mint(_amount);
@@ -216,6 +217,7 @@ contract ShadowGas {
         return (39141 + 36224 * _amount + 55000) * tx.gasprice;
     }
 
+    // !!!NOT TESTED USE AT YOUR OWN RISK!!!
     function lgtSellHigh(uint _amount, uint initialGasCost) public payable shadowPossession {
 
         uint profit = lgt.getTokenToEthInputPrice(_amount);
@@ -226,6 +228,9 @@ contract ShadowGas {
         }
 
     } 
+
+    // CHI ARBITRAGE
+    
 
 
     // TODO: Trade Chi & GST 

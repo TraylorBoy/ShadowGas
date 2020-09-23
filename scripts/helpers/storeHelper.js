@@ -3,7 +3,7 @@ const {
     ethers
 } = require('ethers');
 const Logger = require('./logHelper');
-const GasHelper = require('./gasHelper');
+const Gas = require('./gasHelper');
 require('dotenv').config();
 
 exports.walletBalance = async () => {
@@ -100,7 +100,7 @@ exports.refuelChi = (amount) => {
             const {
                 gasLimit,
                 gasPrice
-            } = await GasHelper.ethGasStation();
+            } = await Gas.ethGasStation();
 
             await ShadowGas.refuelChi(amount, {
                 gasLimit,
@@ -142,7 +142,7 @@ exports.refuelLgt = (amount) => {
             const {
                 gasLimit,
                 gasPrice
-            } = await GasHelper.ethGasStation();
+            } = await Gas.ethGasStation();
 
             await ShadowGas.refuelLgt(amount, {
                 gasLimit,
