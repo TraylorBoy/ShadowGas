@@ -10,7 +10,7 @@ exports.walletBalance = async () => {
 
     [deployer] = await bre.ethers.getSigners();
 
-    const bal = ethers.utils.fromEther((await deployer.getBalance()).toString());
+    const bal = ethers.utils.formatEther((await deployer.getBalance()).toString());
 
     Logger.talk(`Wallet Balance: ${bal}`);
 

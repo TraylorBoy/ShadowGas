@@ -4,22 +4,20 @@ const {
 } = require('ethers');
 const {
     GasHelper,
-    Logger
+    Logger,
+    Sleep
 } = require('../helpers/helper');
 require('dotenv').config();
 
 async function main() {
+    while (true) {
 
-    [deployer] = await bre.ethers.getSigners();
 
-    const ShadowGas = await bre.ethers.getContractAt('ShadowGas', process.env.SHADOWGAS);
+        await GasHelper.lgtArb();
 
-    Logger.talk(`Wallet Balance: ${ethers.utils.formatEther((await deployer.getBalance()).toString())}`);
+        await Sleep(60000);
 
-    const ethGasStation = await GasHelper.ethGasStation();
-
-    const etherScan = await GasHelper.etherScan();
-
+    }
 }
 
 main()

@@ -1,10 +1,11 @@
 {
-    "RefuelChiAmt": "13",
-    "RefuelLgtAmt": "13",
+    "RefuelChiAmt": "1",
+    "RefuelLgtAmt": "1",
     "EmptyChiAmt": "1",
     "EmptyLgtAmt": "1",
     "EmptyChiTo": "0x4B2c5b6331eC7B8b1ec741966555Ae7E23D47C06",
     "EmptyLgtTo": "0x4B2c5b6331eC7B8b1ec741966555Ae7E23D47C06",
     "GasLimit": "2000000",
-    "GasSpeed": "fast"
+    "GasSpeed": "slow",
+    "LgtTradeAmt": "12"
 }

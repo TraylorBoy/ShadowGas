@@ -3,7 +3,10 @@ const {
     ethers
 } = require('ethers');
 const Logger = require('./logHelper');
+const GasToken = require('./gasToken');
+const Store = require('./storeHelper');
 const fetch = require('node-fetch');
+const uniswap = require('@uniswap/sdk');
 require('dotenv').config();
 
 
@@ -90,5 +93,74 @@ exports.etherScan = async () => {
 
     }
 
+
+};
+
+exports.uniswapv2ChiPrice = async () => {
+
+    const CHI = new uniswap.Token(uniswap.ChainId.MAINNET, GasToken.chi.address, GasToken.chi.decimals);
+
+    const pair = await uniswap.Fetcher.fetchPairData(CHI, uniswap.WETH[CHI.chainId]);
+
+    const route = new uniswap.Route([pair], uniswap.WETH[CHI.chainId]);
+
+    return route.midPrice.invert().toSignificant(6);
+
+};
+
+exports.lgtTradeOpportunity = async () => {
+
+    const ShadowGas = await bre.ethers.getContractAt('ShadowGas', process.env.SHADOWGAS);
+
+    const {
+        gasPrice
+    } = await this.etherScan();
+
+    const tradeInfo = await ShadowGas.lgtTradeInfo(parseInt(bre.shadowConfig.LgtTradeAmt), {
+        gasLimit: 500000,
+        gasPrice
+    });
+
+    Logger.talk('LGT Trade Info');
+    Logger.talk(`Profit: ${ethers.utils.formatEther(tradeInfo[0].toString())}`);
+    Logger.talk(`Gas Cost: ${ethers.utils.formatEther(tradeInfo[1].toString())}`);
+    Logger.talk(`Is Profitable: ${tradeInfo[2]}`);
+
+    return {
+        gasCost: tradeInfo[1],
+        isProfitable: tradeInfo[2],
+        gasPrice
+    };
+
+};
+
+exports.lgtArb = async () => {
+
+    const trade = await this.lgtTradeOpportunity();
+
+    if (trade.isProfitable) {
+
+        Logger.talk('Initiating trade');
+
+        const ShadowGas = await bre.ethers.getContractAt('ShadowGas', process.env.SHADOWGAS);
+
+        const balanceBefore = await Store.walletBalance();
+
+        await ShadowGas.lgtArb(parseInt(bre.shadowConfig.LgtTradeAmt), {
+            gasLimit: 500000,
+            gasPrice: trade.gasPrice,
+            value: trade.gasCost
+        }).then(async (tx) => {
+
+            Logger.talk('Waiting for transaction to finish');
+            await tx.wait();
+
+        });
+
+        const balanceAfter = await Store.walletBalance();
+
+        Logger.talk(`Profit: ${balanceAfter - balanceBefore}`);
+
+    }
 
 };
