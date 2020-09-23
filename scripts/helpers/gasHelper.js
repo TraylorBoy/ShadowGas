@@ -108,6 +108,12 @@ exports.uniswapv2ChiPrice = async () => {
 
 };
 
+/* -------------------------------------------------------------------------- */
+// TODO: Make a separate helper (tradeHelper.js)
+/*
+    LGT TRADE
+*/
+
 exports.lgtTradeOpportunity = async () => {
 
     const ShadowGas = await bre.ethers.getContractAt('ShadowGas', process.env.SHADOWGAS);
