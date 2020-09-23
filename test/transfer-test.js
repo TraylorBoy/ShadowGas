@@ -6,7 +6,7 @@ const {
     expect
 } = require('chai');
 const {
-    GasHelper
+    Gas
 } = require('../scripts/helpers/helper');
 const {
     lgt
@@ -38,7 +38,7 @@ describe('Transfer', () => {
             const {
                 gasLimit,
                 gasPrice
-            } = await GasHelper.ethGasStation();
+            } = await Gas.ethGasStation();
 
             if (chiBalance > 0) {
 
@@ -109,7 +109,7 @@ describe('Transfer', () => {
             const {
                 gasLimit,
                 gasPrice
-            } = await GasHelper.ethGasStation();
+            } = await Gas.ethGasStation();
 
             if (lgtBalance > 0) {
 
@@ -181,7 +181,7 @@ describe('Transfer', () => {
             const {
                 gasLimit,
                 gasPrice
-            } = await GasHelper.ethGasStation();
+            } = await Gas.ethGasStation();
 
             if (chiBalance > 0) {
 
@@ -261,7 +261,7 @@ describe('Transfer', () => {
             const {
                 gasLimit,
                 gasPrice
-            } = await GasHelper.ethGasStation();
+            } = await Gas.ethGasStation();
 
             if (lgtBalance > 0) {
 

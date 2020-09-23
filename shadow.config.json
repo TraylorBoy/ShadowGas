@@ -7,5 +7,6 @@
     "EmptyLgtTo": "0x4B2c5b6331eC7B8b1ec741966555Ae7E23D47C06",
     "GasLimit": "1000000",
     "GasSpeed": "average",
-    "LgtTradeAmt": "25"
+    "LgtTradeAmt": "25",
+    "ChiTradeAmt": "25"
 }

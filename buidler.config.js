@@ -186,6 +186,60 @@ task('emptyTo', 'Transfers tokens from contract to address')
 
     });
 
+// npx buidler oracle --token < Chi/Lgt >
+task('oracle', 'Retrieves trade information for token')
+
+    .addParam('token', 'Token to update trade information for')
+
+    .setAction(async (taskArgs) => {
+
+        const oracle = async () => {
+
+            try {
+
+                const path = `./scripts/trade/oracle${(taskArgs.token).toString()}.js`;
+
+                await execShPromise(`npx buidler run ${path}`);
+
+            } catch (error) {
+
+                console.error(error.message);
+
+            }
+
+        };
+
+        await oracle();
+
+    });
+
+// npx buidler arbitrage --token < Chi/Lgt >
+task('arbitrage', 'Performs the arbitrage trading strategy between eth and token')
+
+    .addParam('token', 'Token to arbitrage')
+
+    .setAction(async (taskArgs) => {
+
+        const arbitrage = async () => {
+
+            try {
+
+                const path = `./scripts/trade/arbitrage${(taskArgs.token).toString()}.js`;
+
+                await execShPromise(`npx buidler run ${path}`);
+
+            } catch (error) {
+
+                console.error(error.message);
+
+            }
+
+        };
+
+        await arbitrage();
+
+    });
+
 module.exports = {
     defaultNetwork: 'kovan',
     networks: {

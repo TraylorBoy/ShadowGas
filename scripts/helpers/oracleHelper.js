@@ -39,8 +39,15 @@ exports.LGT_TRADE = {
 };
 
 exports.CHI_TRADE = {
+    GasLimitForTrade: 0,
+    GasCostForTrade: 0,
     UniswapPrice: 0,
-    BuyAmount: parseInt(bre.shadowConfig.ChiTradeAmt)
+    BuyAmount: parseInt(bre.shadowConfig.ChiTradeAmt),
+    ExpectedProfit: 0,
+    Profitable: false,
+    Update: async () => {
+        await updateChi();
+    }
 };
 
 const updateLgt = async () => {
@@ -68,6 +75,18 @@ const updateLgt = async () => {
     this.LGT_TRADE.Profitable = tradeInfo[2];
 
     this.LGT_TRADE.Log();
+
+};
+
+const updateChi = async () => {
+
+    Logger.talk('Updating CHI Trade Info');
+
+    const ShadowGas = await bre.ethers.getContractAt('ShadowGas', process.env.SHADOWGAS);
+
+    this.CHI_TRADE.UniswapPrice = await uniswapv2ChiPrice();
+
+    console.log(this.CHI_TRADE.UniswapPrice);
 
 };
 
