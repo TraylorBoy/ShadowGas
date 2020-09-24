@@ -15,9 +15,9 @@
 > Stores, Transfers, and Trades, Ethereum Gas Tokens
 
 ## Features
-Stores and Transfers 1Inch Chi Tokens and Liquid Gas Tokens
 
-*Working on Trading functionality and GST2 integration*
+1. Stores and Transfers 1Inch Chi Tokens and Liquid Gas Tokens
+2. Trades Liquid Gas Tokens
 
 ## Install
 
@@ -30,6 +30,7 @@ yarn install
 ```
 
 ## .env
+
 ```sh
 SHADOWGAS="" - Contract Address
 WALLET="" - Wallet Address
@@ -42,6 +43,7 @@ ETH_GAS_STATION="" - EthGasStation API Key
 ```
 
 ## shadow.config.json
+
 ```sh
 `RefuelChiAmt` - Mint Chi Amount
 `RefuelLgtAmt` - Mint Lgt Amount
@@ -51,10 +53,12 @@ ETH_GAS_STATION="" - EthGasStation API Key
 `EmptyLgtTo` - Address to transfer Lgt to
 `GasLimit` - Gas Limit
 `GasSpeed` - Gas Speed ("fast", "average", "slow") 
+`TradeLimit` - The amount of trades to perform
+`LgtTradeAmount` - Amount of LGT Tokens to trade
 ```
-Gas Price is retrieved from https://ethgasstation.info/
 
-*Gas Price will be changed when Oracle is finished*
+Gas Price is retrieved from https://ethgasstation.info/ and https://etherscan.io/gastracker
+You will need an API key for both!
 
 **Modify *shadow.config.js* and *buidler.config.js* before running tasks if you want to change default variables**
 
@@ -80,17 +84,21 @@ module.exports = {
 ```
 
 ## Deploy
+
 ```sh
 npx buidler deploy
 ```
 
 Will deploy contract to the `defaultNetwork` defined in `buidler.config.js`
 
+**Be sure to copy address and include it in your `.env` file**
+
 ## Store
 
 *`<GAS_TOKEN>` should be either **Chi** or **Lgt***
 
 ### Refuel
+
 ```sh
 npx buidler refuel --token <GAS_TOKEN>
 ```
@@ -98,6 +106,7 @@ npx buidler refuel --token <GAS_TOKEN>
 Mints either Chi or Lgt tokens and stores them at contract's address
 
 ### Tank
+
 ```sh
 npx buidler tank --token <GAS_TOKEN>
 ```
@@ -109,6 +118,7 @@ Retrieves Chi or Lgt token balance at contract's address
 *`<GAS_TOKEN>` should be either **Chi** or **Lgt***
 
 ### Empty
+
 ```sh
 npx buidler empty --token <GAS_TOKEN>
 ```
@@ -116,11 +126,32 @@ npx buidler empty --token <GAS_TOKEN>
 Sends Chi or Lgt from contract to possessor *(contract owner)*
 
 ### EmptyTo
+
 ```sh
 npx buidler emptyTo --token <GAS_TOKEN>
 ```
 
 Sends Chi or Lgt from contract to address *(modify in shadow.config.js)*
+
+## Trade
+
+*Only trades LGT, but can use refueled CHI for discounts so profit may be more than expected if discount is applied*
+
+### Oracle
+
+```sh
+npx buidler oracle
+```
+
+Will retrieve trade information for arbitrage
+
+### Arbitrage
+
+```sh
+npx buidler arbitrage
+```
+
+Will run a loop to continuously check for trade opportunities every minute and will execute trades if an opportunity is found until `TradeLimit` is reached
 
 ## Run tests
 
@@ -128,12 +159,41 @@ Sends Chi or Lgt from contract to address *(modify in shadow.config.js)*
 npx buidler test
 ```
 
-Will test contract functions which should all pass
-**May require ether to run**
+Will test *ALL* contract functions
 
-## TODO: Examples
+```sh
+npx buidler test ./test/store-test.js
+```
+
+Will test only the contract's store functions
+
+```sh
+npx buidler test ./test/transfer-test.js
+```
+
+Will test only the contract's transfer functions
+
+**May require ether to run transfer tests**
+
+## Examples
+
+### Store
+https://dev.to/traylorboy/shadowgas-store-40m9
+
+### Transfer
+https://dev.to/traylorboy/shadowgas-transfer-59jg
+
+### TODO: Trade
+
+## Roadmap
+
+1. Add GST functionality
+2. LightStation UI
+3. CHI & GST Trades
+4. More trading strategies
 
 ## Resources
+
 https://ethgasstation.info/
 
 https://1inch.exchange/#/faq/everything-you-wanted-to-know-about-chi-gastoken

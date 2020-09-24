@@ -48,7 +48,7 @@ exports.CHI_TRADE = {
     GasLimitForTrade: 0,
     GasPriceForTrade: 0,
     GasCostForTrade: 0,
-    BuyAmount: parseInt(bre.shadowConfig.ChiTradeAmt),
+    BuyAmount: 0,
     ExpectedProfit: 0,
     Profitable: false,
     Readable: {

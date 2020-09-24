@@ -186,18 +186,16 @@ task('emptyTo', 'Transfers tokens from contract to address')
 
     });
 
-// npx buidler oracle --token < Chi/Lgt >
-task('oracle', 'Retrieves trade information for token')
+// npx buidler oracle
+task('oracle', 'Retrieves trade information for the liquid gas token')
 
-    .addParam('token', 'Token to update trade information for')
-
-    .setAction(async (taskArgs) => {
+    .setAction(async () => {
 
         const oracle = async () => {
 
             try {
 
-                const path = `./scripts/trade/oracle${(taskArgs.token).toString()}.js`;
+                const path = `./scripts/trade/oracle.js`;
 
                 await execShPromise(`npx buidler run ${path}`);
 
@@ -213,18 +211,16 @@ task('oracle', 'Retrieves trade information for token')
 
     });
 
-// npx buidler arbitrage --token < Chi/Lgt >
-task('arbitrage', 'Performs the arbitrage trading strategy between eth and token')
+// npx buidler arbitrage
+task('arbitrage', 'Performs the arbitrage trading strategy between eth and liquid gas token')
 
-    .addParam('token', 'Token to arbitrage')
-
-    .setAction(async (taskArgs) => {
+    .setAction(async () => {
 
         const arbitrage = async () => {
 
             try {
 
-                const path = `./scripts/trade/arbitrage${(taskArgs.token).toString()}.js`;
+                const path = `./scripts/trade/arbitrage.js`;
 
                 await execShPromise(`npx buidler run ${path}`);
 
@@ -239,6 +235,9 @@ task('arbitrage', 'Performs the arbitrage trading strategy between eth and token
         await arbitrage();
 
     });
+
+/* -------------------------------------------------------------------------- */
+
 
 module.exports = {
     defaultNetwork: 'kovan',

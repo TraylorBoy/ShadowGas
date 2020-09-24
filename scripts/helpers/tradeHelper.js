@@ -8,7 +8,7 @@ const Oracle = require('./oracleHelper');
 require('dotenv').config();
 
 exports.TRADER = {
-    TradeLimit: 3,
+    TradeLimit: parseInt(bre.shadowConfig.TradeLimit),
     TradeCount: 0,
     TotalProfit: 0,
     Log: () => {
