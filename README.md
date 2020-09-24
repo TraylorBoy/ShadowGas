@@ -191,6 +191,9 @@ https://dev.to/traylorboy/shadowgas-transfer-59jg
 2. LightStation UI
 3. CHI & GST Trades
 4. More trading strategies
+5. IShadowGas
+6. Deploy ShadowGas to mainnet
+7. LightStation contract 
 
 ## Resources
 
