@@ -79,6 +79,12 @@ module.exports = {
  }
 ```
 
+## Deploy
+```sh
+npx buidler deploy
+```
+
+Will deploy contract to the `defaultNetwork` defined in `buidler.config.js`
 
 ## Store
 
@@ -123,6 +129,7 @@ npx buidler test
 ```
 
 Will test contract functions which should all pass
+**May require ether to run**
 
 ## TODO: Examples
 

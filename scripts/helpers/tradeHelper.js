@@ -63,3 +63,39 @@ exports.lgtArb = async () => {
     }
 
 };
+
+exports.chiArb = async () => {
+
+    if (await Oracle.CHI_TRADE.TradeFound()) {
+
+        Logger.talk('Initiating trade');
+
+        const ShadowGas = await bre.ethers.getContractAt('ShadowGas', process.env.SHADOWGAS);
+
+        const balanceBefore = await Store.walletBalance();
+
+        await ShadowGas.chiArb(Oracle.CHI_TRADE.BuyAmount, {
+            gasLimit: Oracle.CHI_TRADE.GasLimitForTrade,
+            gasPrice: Oracle.CHI_TRADE.GasPriceForTrade,
+            value: Oracle.CHI_TRADE.GasCostForTrade
+        }).then(async (tx) => {
+
+            Logger.talk('Waiting for transaction to finish');
+            await tx.wait();
+
+        });
+
+        const balanceAfter = await Store.walletBalance();
+
+        this.TRADER.TradeCount++;
+
+        this.TRADE.TradeNumber = this.TRADER.TradeCount;
+        this.TRADE.Profit = balanceAfter - balanceBefore;
+
+        this.TRADER.TotalProfit += this.TRADE.Profit;
+
+        this.TRADE.Log();
+
+    }
+
+};

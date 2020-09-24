@@ -20,9 +20,6 @@ interface IGasToken {
     function allowance ( address owner, address spender ) external view returns ( uint256 remaining );
 }
 
-// TODO: Add functionality for GST
-// TODO: Reduce contract gas usage
-
 contract ShadowGas {
 
     /*
@@ -35,6 +32,7 @@ contract ShadowGas {
     address constant CHI = 0x0000000000004946c0e9F43F4Dee607b0eF1fA1c; // 1inch Chi Token
     address constant LGT = 0x000000000000C1CB11D5c062901F32D06248CE48; // Liquid Gas Token
     address constant GST = 0x0000000000b3F879cb30FE243b4Dfee438691c04; // Gas Token
+
 
     IGasToken chi = IGasToken(CHI);
     IGasToken gst = IGasToken(gst);
@@ -61,14 +59,32 @@ contract ShadowGas {
     }
 
     modifier lgtDiscount() {
+
         uint gasStart = gasleft();
+
         _;
+
         uint gasSpent = (gasStart - gasleft() + 55000) / 41300;
 
         uint buyCost = lgt.getEthToTokenOutputPrice(gasSpent);
 
         if (buyCost < ((18145 * gasSpent) - 24000) * tx.gasprice) {
+
             lgt.buyAndFree(gasSpent, block.timestamp, msg.sender);
+
+        }
+    }
+
+    modifier chiDiscount() {
+
+        uint gasStart = gasleft();
+        
+        _;
+
+        uint gasSpent = 21000 + gasStart - gasleft() + 16 * msg.data.length;
+        
+        if (chi.balanceOf(address(this)) >= (gasSpent + 14154) / 41947) {
+            chi.freeFromUpTo(address(this), (gasSpent + 14154) / 41947);
         }
     }
 
@@ -84,6 +100,8 @@ contract ShadowGas {
     event LgtEmptied(uint _amount, address _emptier, uint _lgtBalance);
     event ChiRefueled(uint _amount, address _refueler, uint _chiBalance);
     event ChiEmptied(uint _amount, address _emptier, uint _chiBalance);
+    event GstRefueled(uint _amount, address _refueler, uint _gstBalance);
+    event GstEmptied(uint _amount, address _emptier, uint _gstBalance);
 
 /* -------------------------------------------------------------------------- */
 
@@ -100,6 +118,10 @@ contract ShadowGas {
 
     function tankLgt() public view returns (uint) {
         return lgt.balanceOf(address(this));
+    }
+
+    function tankGst() public view returns (uint) {
+        return gst.balanceOf(address(this));
     }
 
     function refuelChi(uint _amount) public shadowPossession returns (bool) {
@@ -122,6 +144,18 @@ contract ShadowGas {
         require(lgt.balanceOf(address(this)) >= _amount, "Minting lgt failed");
 
         emit LgtRefueled(_amount, msg.sender, lgt.balanceOf(address(this)));
+
+        return true;
+    }
+
+    function refuelGst(uint _amount) public shadowPossession returns (bool) {
+        require(_amount > 0, "Value may not be 0");
+
+        gst.mint(_amount);
+
+        require(gst.balanceOf(address(this)) >= _amount, "Minting gst failed");
+
+        emit GstRefueled(_amount, msg.sender, gst.balanceOf(address(this)));
 
         return true;
     }
@@ -149,11 +183,22 @@ contract ShadowGas {
 
     function emptyLgtTank(uint _amount) public shadowPossession returns (bool) {
         require(lgt.balanceOf(address(this)) >= _amount, "Tank does not have that much to empty");
-        require(lgt.approve(msg.sender, _amount), "Failed to approve chi amount");
+        require(lgt.approve(msg.sender, _amount), "Failed to approve lgt amount");
 
         lgt.transfer(msg.sender, _amount);
 
         emit LgtEmptied(_amount, msg.sender, lgt.balanceOf(address(this)));
+
+        return true;
+    }
+
+    function emptyGstTank(uint _amount) public shadowPossession returns (bool) {
+        require(gst.balanceOf(address(this)) >= _amount, "Tank does not have that much to empty");
+        require(gst.approve(msg.sender, _amount), "Failed to approve gst amount");
+
+        gst.transfer(msg.sender, _amount);
+
+        emit GstEmptied(_amount, msg.sender, gst.balanceOf(address(this)));
 
         return true;
     }
@@ -169,9 +214,18 @@ contract ShadowGas {
 
     function emptyLgtTankTo(uint _amount, address _to) public shadowPossession returns (bool) {
         require(lgt.balanceOf(address(this)) >= _amount, "Tank does not have that much to empty");
-        require(lgt.approve(_to, _amount), "Failed to approve chi amount");
+        require(lgt.approve(_to, _amount), "Failed to approve lgt amount");
 
         lgt.transfer(_to, _amount);
+
+        return true;
+    }
+
+    function emptyGstTankTo(uint _amount, address _to) public shadowPossession returns (bool) {
+        require(gst.balanceOf(address(this)) >= _amount, "Tank does not have that much to empty");
+        require(gst.approve(_to, _amount), "Failed to approve gst amount");
+
+        gst.transfer(_to, _amount);
 
         return true;
     }
@@ -189,7 +243,7 @@ contract ShadowGas {
 
         uint profit = lgt.getTokenToEthInputPrice(_amount);
 
-        uint gasCost = (39141 + 36224 * _amount + 55000) * tx.gasprice; // 55000 - overhead
+        uint gasCost = (39141 + 36224 * _amount + 55000) * tx.gasprice; // 55000 = overhead
 
         bool isProfitable = false;
 
@@ -202,37 +256,12 @@ contract ShadowGas {
     }
 
     // LGT ARBITRAGE
-    function lgtArb(uint _amount) public payable shadowPossession {
+    function lgtArb(uint _amount) public payable shadowPossession chiDiscount {
+        require(_amount > 0, "Amount may not be 0");
 
         lgt.mintToSellTo(_amount, msg.value, block.timestamp, msg.sender);
 
     }
 
-    // LGT BUY LOW SELL HIGH
-    // !!!NOT TESTED USE AT YOUR OWN RISK!!!
-    function lgtBuyLow(uint _amount) public payable shadowPossession returns (uint) {
-
-        lgt.mint(_amount);
-
-        return (39141 + 36224 * _amount + 55000) * tx.gasprice;
-    }
-
-    // !!!NOT TESTED USE AT YOUR OWN RISK!!!
-    function lgtSellHigh(uint _amount, uint initialGasCost) public payable shadowPossession {
-
-        uint profit = lgt.getTokenToEthInputPrice(_amount);
-
-        if (profit > initialGasCost) {
-            require(lgt.free(_amount), "Failed freeing amount");
-            msg.sender.transfer(address(this).balance);
-        }
-
-    } 
-
-    // CHI ARBITRAGE
     
-
-
-    // TODO: Trade Chi & GST 
-
 }
