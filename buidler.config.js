@@ -6,7 +6,6 @@ usePlugin('@nomiclabs/buidler-waffle');
 usePlugin('@nomiclabs/buidler-web3');
 require('dotenv').config();
 
-const execSh = require('exec-sh');
 const fs = require('fs');
 const execShPromise = require('exec-sh').promise;
 const shadowConfig = fs.readFileSync('./shadow.config.json');
@@ -185,6 +184,59 @@ task('emptyTo', 'Transfers tokens from contract to address')
         await emptyTo();
 
     });
+
+// npx buidler oracle
+task('oracle', 'Retrieves trade information for the liquid gas token')
+
+    .setAction(async () => {
+
+        const oracle = async () => {
+
+            try {
+
+                const path = `./scripts/trade/oracle.js`;
+
+                await execShPromise(`npx buidler run ${path}`);
+
+            } catch (error) {
+
+                console.error(error.message);
+
+            }
+
+        };
+
+        await oracle();
+
+    });
+
+// npx buidler arbitrage
+task('arbitrage', 'Performs the arbitrage trading strategy between eth and liquid gas token')
+
+    .setAction(async () => {
+
+        const arbitrage = async () => {
+
+            try {
+
+                const path = `./scripts/trade/arbitrage.js`;
+
+                await execShPromise(`npx buidler run ${path}`);
+
+            } catch (error) {
+
+                console.error(error.message);
+
+            }
+
+        };
+
+        await arbitrage();
+
+    });
+
+/* -------------------------------------------------------------------------- */
+
 
 module.exports = {
     defaultNetwork: 'kovan',

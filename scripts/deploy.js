@@ -3,7 +3,7 @@ const {
     ethers
 } = require('ethers');
 const {
-    GasHelper,
+    Gas,
     Logger
 } = require('./helpers/helper');
 require('dotenv').config();
@@ -19,7 +19,7 @@ async function main() {
     const {
         gasPrice,
         gasLimit
-    } = await GasHelper.ethGasStation();
+    } = await Gas.etherScan();
 
     const shadowGas = await ShadowGas.deploy({
         gasPrice,

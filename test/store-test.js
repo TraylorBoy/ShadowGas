@@ -6,7 +6,7 @@ const {
     expect
 } = require('chai');
 const {
-    GasHelper
+    Gas
 } = require('../scripts/helpers/helper');
 require('dotenv').config();
 
@@ -54,7 +54,7 @@ describe('Store', () => {
             const {
                 gasLimit,
                 gasPrice
-            } = await GasHelper.ethGasStation();
+            } = await Gas.ethGasStation();
 
             await ShadowGas.refuelChi(1, {
 
@@ -84,7 +84,7 @@ describe('Store', () => {
             const {
                 gasLimit,
                 gasPrice
-            } = await GasHelper.ethGasStation();
+            } = await Gas.ethGasStation();
 
             await ShadowGas.refuelLgt(1, {
 

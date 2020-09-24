@@ -15,21 +15,57 @@ exports.ethGasStation = async () => {
 
     const prices = await request.json();
 
-    // Gas Speed can either be one of the below
-    // fastest, fast, average, safeLow
-    // check https://ethgasstation.info
-
     const gasLimit = parseInt(bre.shadowConfig.GasLimit);
-    const gasPrice = prices[bre.shadowConfig.GasSpeed] / 10;
-    const waitTime = prices[`${bre.shadowConfig.GasSpeed}Wait`] * 10; // in minutes
-    const txCost = ethers.utils.formatEther((gasLimit * (gasPrice * 1000000000)).toString());
 
-    Logger.txInfo(gasPrice, gasLimit, waitTime, txCost);
+    if (bre.shadowConfig.GasSpeed == 'fast') {
 
-    return {
-        gasLimit,
-        gasPrice: gasPrice * 1000000000
-    };
+        const gasLimit = parseInt(bre.shadowConfig.GasLimit);
+
+        const gasPrice = prices['fast'] / 10;
+
+        const waitTime = prices['fastWait']; // in minutes
+
+        const txCost = ethers.utils.formatEther((gasLimit * (gasPrice * 1000000000)).toString());
+
+        Logger.txInfo(gasPrice, gasLimit, waitTime, txCost);
+
+        return {
+            gasLimit,
+            gasPrice: gasPrice * 1000000000
+        };
+
+    } else if (bre.shadowConfig.GasSpeed == 'average') {
+
+        const gasPrice = prices['average'] / 10;
+
+        const waitTime = prices['avgWait']; // in minutes
+
+        const txCost = ethers.utils.formatEther((gasLimit * (gasPrice * 1000000000)).toString());
+
+        Logger.txInfo(gasPrice, gasLimit, waitTime, txCost);
+
+        return {
+            gasLimit,
+            gasPrice: gasPrice * 1000000000
+        };
+
+    } else if (bre.shadowConfig.GasSpeed == 'slow') {
+
+        const gasPrice = prices['safeLow'] / 10;
+
+        const waitTime = prices['safeLowWait']; // in minutes
+
+        const txCost = ethers.utils.formatEther((gasLimit * (gasPrice * 1000000000)).toString());
+
+        Logger.txInfo(gasPrice, gasLimit, waitTime, txCost);
+
+        return {
+            gasLimit,
+            gasPrice: gasPrice * 1000000000
+        };
+
+    }
+
 };
 
 exports.etherScan = async () => {
@@ -91,4 +127,24 @@ exports.etherScan = async () => {
     }
 
 
+};
+
+// does not log tx info
+exports.etherScanGasPrice = async () => {
+    const request = await fetch(`https://api.etherscan.io/api?module=gastracker&action=gasoracle&apikey=${process.env.ETHERSCAN}`);
+
+    const prices = await request.json();
+
+    if (bre.shadowConfig.GasSpeed == 'fast') {
+
+        return prices.result.FastGasPrice * 1000000000;
+
+    } else if (bre.shadowConfig.GasSpeed == 'average') {
+
+        return prices.result.ProposeGasPrice * 1000000000;
+
+    } else if (bre.shadowConfig.GasSpeed == 'slow') {
+
+        return prices.result.SafeGasPrice * 1000000000;
+    }
 };

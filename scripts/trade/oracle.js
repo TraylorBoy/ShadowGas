@@ -3,22 +3,22 @@ const {
     ethers
 } = require('ethers');
 const {
-    GasHelper,
+    Oracle,
     Logger
 } = require('../helpers/helper');
 require('dotenv').config();
 
+const timer = require('execution-time')();
+
 async function main() {
 
-    [deployer] = await bre.ethers.getSigners();
+    timer.start('oracleLgt');
 
-    const ShadowGas = await bre.ethers.getContractAt('ShadowGas', process.env.SHADOWGAS);
+    await Oracle.LGT_TRADE.Update();
 
-    Logger.talk(`Wallet Balance: ${ethers.utils.formatEther((await deployer.getBalance()).toString())}`);
+    const result = (timer.stop('oracleLgt').time / 1000).toFixed(0);
 
-    const ethGasStation = await GasHelper.ethGasStation();
-
-    const etherScan = await GasHelper.etherScan();
+    Logger.talk(`Updated trade information in ${result} seconds`);
 
 }
 
