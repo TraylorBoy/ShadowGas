@@ -29,6 +29,8 @@ cd ShadowGas
 yarn install
 ```
 
+**You will need to create a `.env` file (see below)**
+
 ## .env
 
 ```sh
@@ -58,6 +60,7 @@ ETH_GAS_STATION="" - EthGasStation API Key
 ```
 
 Gas Price is retrieved from https://ethgasstation.info/ and https://etherscan.io/gastracker
+
 You will need an API key for both!
 
 **Modify *shadow.config.js* and *buidler.config.js* before running tasks if you want to change default variables**
@@ -187,9 +190,9 @@ https://dev.to/traylorboy/shadowgas-transfer-59jg
 
 ## Roadmap
 
-1. Add GST functionality
-2. LightStation UI
-3. CHI & GST Trades
+1. Add GST functionality (v1.1.0)
+2. LightStation UI (v2.0.0)
+3. CHI & GST Trades (v2.1.0)
 4. More trading strategies
 5. IShadowGas
 6. Deploy ShadowGas to mainnet
