@@ -193,10 +193,10 @@ https://dev.to/traylorboy/shadowgas-transfer-59jg
 1. Add GST functionality (v1.1.0)
 2. LightStation UI (v2.0.0)
 3. CHI & GST Trades (v2.1.0)
-4. More trading strategies
-5. IShadowGas
-6. Deploy ShadowGas to mainnet
-7. LightStation contract 
+4. More trading strategies (v2.2.0)
+5. IShadowGas (v3.0.0)
+6. Deploy ShadowGas to mainnet (v3.0.0)
+7. Begin work on LightStation
 
 ## Resources
 
