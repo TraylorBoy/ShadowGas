@@ -6,7 +6,6 @@ usePlugin('@nomiclabs/buidler-waffle');
 usePlugin('@nomiclabs/buidler-web3');
 require('dotenv').config();
 
-const execSh = require('exec-sh');
 const fs = require('fs');
 const execShPromise = require('exec-sh').promise;
 const shadowConfig = fs.readFileSync('./shadow.config.json');

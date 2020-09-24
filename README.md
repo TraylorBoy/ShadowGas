@@ -88,6 +88,8 @@ module.exports = {
 
 ## Deploy
 
+*ShadowGas contract size is 7.50(Kb)*
+
 ```sh
 npx buidler deploy
 ```
