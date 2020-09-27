@@ -127,7 +127,7 @@ describe('Chi', () => {
 
             expect(balAfter).to.equal(balBefore + 1);
 
-            await ShadowGas.emptyChiTankTo(1, "0x6B8326c8b8B52b6F2b5cc020733E346e6d8c83aA", {
+            await ShadowGas.emptyChiTankTo(1, bre.shadowConfig.EmptyChiTo, {
                 gasLimit,
                 gasPrice
             }).then(async (tx) => {

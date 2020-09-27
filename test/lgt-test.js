@@ -127,7 +127,7 @@ describe('Lgt', () => {
 
             expect(balAfter).to.equal(balBefore + 1);
 
-            await ShadowGas.emptyLgtTankTo(1, "0x6B8326c8b8B52b6F2b5cc020733E346e6d8c83aA", {
+            await ShadowGas.emptyLgtTankTo(1, bre.shadowConfig.EmptyLgtTo, {
                 gasLimit,
                 gasPrice
             }).then(async (tx) => {

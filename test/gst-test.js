@@ -53,7 +53,7 @@ describe('Gst', () => {
 
         it('Should mint 0.01 gst token and store it at contract\'s address', async () => {
 
-            const balBefore = ethers.utils.formatUnits(await ShadowGas.tankGst(), 2);
+            const balStart = (ethers.utils.formatUnits(await ShadowGas.tankGst(), 2)).toString();
 
             await ShadowGas.refuelGst(ethers.utils.parseUnits("0.01", 2), {
 
@@ -66,9 +66,9 @@ describe('Gst', () => {
 
             });
 
-            const balAfter = ethers.utils.formatUnits(await ShadowGas.tankGst(), 2);
+            const balEnd = (ethers.utils.formatUnits(await ShadowGas.tankGst(), 2)).toString();
 
-            expect(parseFloat(balAfter)).to.equal(parseFloat(balBefore) + 0.01);
+            expect(balEnd).to.equal((parseFloat(balStart) + 0.01).toFixed(2));
 
         });
 
@@ -106,9 +106,9 @@ describe('Gst', () => {
 
             });
 
-            const balAfterEmpty = ethers.utils.formatUnits(await ShadowGas.tankGst(), 2);
+            const balEnd = ethers.utils.formatUnits(await ShadowGas.tankGst(), 2);
 
-            expect(balAfterEmpty.toString()).to.equal(balStart.toString());
+            expect(balEnd.toString()).to.equal(balStart.toString());
 
         });
 
@@ -131,7 +131,7 @@ describe('Gst', () => {
 
             });
 
-            await ShadowGas.emptyGstTankTo(ethers.utils.parseUnits("0.01", 2), "0x6B8326c8b8B52b6F2b5cc020733E346e6d8c83aA", {
+            await ShadowGas.emptyGstTankTo(ethers.utils.parseUnits("0.01", 2), bre.shadowConfig.EmptyGstTo, {
 
                 gasLimit,
                 gasPrice
