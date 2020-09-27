@@ -77,7 +77,7 @@ task('deploy', 'Deploys ShadowGas to default network')
 
     });
 
-// npx buidler refuel --token < Chi/Lgt >
+// npx buidler refuel --token < Chi/Lgt/Gst >
 task('refuel', 'Mints amount of gas tokens defined in shadow.config and stores them at contract\'s address')
 
     .addParam('token', 'Token to mint')
@@ -104,7 +104,7 @@ task('refuel', 'Mints amount of gas tokens defined in shadow.config and stores t
 
     });
 
-// npx buidler tank --token < Chi/Lgt >
+// npx buidler tank --token < Chi/Lgt/Gst >
 task('tank', 'Deploys ShadowGas to default network')
 
     .addParam('token', 'Token to retrieve balance for')
@@ -131,7 +131,7 @@ task('tank', 'Deploys ShadowGas to default network')
 
     });
 
-// npx buidler empty --token < Chi/Lgt >
+// npx buidler empty --token < Chi/Lgt/Gst >
 task('empty', 'Transfers tokens from contract to possessor')
 
     .addParam('token', 'Token to transfer')
@@ -158,7 +158,7 @@ task('empty', 'Transfers tokens from contract to possessor')
 
     });
 
-// npx buidler emptyTo --token < Chi/Lgt >
+// npx buidler emptyTo --token < Chi/Lgt/Gst >
 task('emptyTo', 'Transfers tokens from contract to address')
 
     .addParam('token', 'Token to transfer')

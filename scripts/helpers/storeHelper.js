@@ -86,6 +86,27 @@ exports.tankLgt = () => {
     });
 };
 
+exports.tankGst = () => {
+    return new Promise(async (resolve, reject) => {
+        const ShadowGas = await bre.ethers.getContractAt('ShadowGas', process.env.SHADOWGAS);
+
+        try {
+
+            const gstBalance = ethers.utils.formatUnits(await ShadowGas.tankGst(), 2);
+
+            Logger.talk(`Gst Balance: ${gstBalance}`);
+
+            resolve(gstBalance);
+
+        } catch (error) {
+
+            reject(new Error(error.message));
+
+        }
+
+    });
+};
+
 exports.refuelChi = (amount) => {
     return new Promise(async (resolve, reject) => {
 
@@ -100,7 +121,7 @@ exports.refuelChi = (amount) => {
             const {
                 gasLimit,
                 gasPrice
-            } = await Gas.ethGasStation();
+            } = await Gas.etherScan();
 
             await ShadowGas.refuelChi(amount, {
                 gasLimit,
@@ -142,7 +163,7 @@ exports.refuelLgt = (amount) => {
             const {
                 gasLimit,
                 gasPrice
-            } = await Gas.ethGasStation();
+            } = await Gas.etherScan();
 
             await ShadowGas.refuelLgt(amount, {
                 gasLimit,
@@ -160,6 +181,50 @@ exports.refuelLgt = (amount) => {
             if (balAfter <= balBefore) throw new Error('LGT Balance did not change. Possible out of gas error, check etherscan or raise gas limit');
 
             Logger.talk(`Refueled ${amount} LGT`);
+
+            resolve(true);
+
+        } catch (error) {
+            reject(error);
+        }
+
+    });
+};
+
+exports.refuelGst = (amount) => {
+    return new Promise(async (resolve, reject) => {
+
+        const ShadowGas = await bre.ethers.getContractAt('ShadowGas', process.env.SHADOWGAS);
+
+        try {
+
+            const balBefore = (await this.tankGst()).toString();
+
+            Logger.talk(`Refueling ${amount} Gst`);
+
+            const {
+                gasLimit,
+                gasPrice
+            } = await Gas.etherScan();
+
+            await ShadowGas.refuelGst(ethers.utils.parseUnits(amount, 2), {
+                gasLimit,
+                gasPrice
+            }).then(async tx => {
+
+                await tx.wait();
+
+            }).catch(err => {
+
+                throw new Error(err.message);
+
+            });
+
+            const balAfter = (await this.tankGst()).toString();
+
+            if (parseFloat(balAfter) <= parseFloat(balBefore)) throw new Error('Gst Balance did not change. Possible out of gas error, check etherscan or raise gas limit');
+
+            Logger.talk(`Refueled ${amount} Gst`);
 
             resolve(true);
 

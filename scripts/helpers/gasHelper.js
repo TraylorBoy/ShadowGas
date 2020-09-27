@@ -148,3 +148,40 @@ exports.etherScanGasPrice = async () => {
         return prices.result.SafeGasPrice * 1000000000;
     }
 };
+
+// does not log tx info
+exports.etherScanTransaction = async () => {
+
+
+    const request = await fetch(`https://api.etherscan.io/api?module=gastracker&action=gasoracle&apikey=${process.env.ETHERSCAN}`);
+
+    const prices = await request.json();
+    const gasLimit = parseInt(bre.shadowConfig.GasLimit);
+
+    if (bre.shadowConfig.GasSpeed == 'fast') {
+
+        return {
+            gasPrice: prices.result.FastGasPrice * 1000000000,
+            gasLimit
+        };
+
+    } else if (bre.shadowConfig.GasSpeed == 'average') {
+
+        return {
+            gasPrice: prices.result.ProposeGasPrice * 1000000000,
+            gasLimit
+        };
+
+    } else if (bre.shadowConfig.GasSpeed == 'slow') {
+
+
+        return {
+            gasPrice: prices.result.SafeGasPrice * 1000000000,
+            gasLimit
+
+        };
+
+    }
+
+
+};
