@@ -1,8 +1,5 @@
 const bre = require('@nomiclabs/buidler');
 const {
-    parse
-} = require('dotenv/types');
-const {
     ethers
 } = require('ethers');
 const Gas = require('./gasHelper');
