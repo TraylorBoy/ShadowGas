@@ -66,7 +66,7 @@ Gas Price is retrieved from https://ethgasstation.info/ and https://etherscan.io
 
 You will need an API key for both!
 
-**Create *.env* file then modify *shadow.config.js* and *buidler.config.js* (module.exports) before running tasks/tests**
+**Create *.env* file then modify *shadow.config.json* and *buidler.config.js* (module.exports) before running tasks/tests**
 
 ## Deploy
 
@@ -118,7 +118,7 @@ Sends Chi, Lgt, or Gst from contract to possessor *(contract owner)*
 npx buidler emptyTo --token <GAS_TOKEN>
 ```
 
-Sends Chi, Lgt, or Gst from contract to address *(modify in shadow.config.js)*
+Sends Chi, Lgt, or Gst from contract to address *(modify in shadow.config.json)*
 
 ## Trade
 
