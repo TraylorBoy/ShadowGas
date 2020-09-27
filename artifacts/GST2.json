@@ -1,5 +1,5 @@
 {
-  "contractName": "IGasToken",
+  "contractName": "GST2",
   "abi": [
     {
       "inputs": [
@@ -162,30 +162,6 @@
           "internalType": "uint256",
           "name": "freed",
           "type": "uint256"
-        }
-      ],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "spender",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "addValue",
-          "type": "uint256"
-        }
-      ],
-      "name": "increaseAllowance",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "success",
-          "type": "bool"
         }
       ],
       "stateMutability": "nonpayable",

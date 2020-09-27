@@ -210,6 +210,8 @@ https://github.com/matnad/liquid-gas-token
 
 https://buidler.dev/
 
+https://github.com/projectchicago/gastoken
+
 ## Author
 
 👤 **Marques Traylor**

@@ -18,6 +18,7 @@ interface IGasToken {
     function transfer ( address to, uint256 value ) external returns ( bool success );
     function free ( uint256 value ) external returns ( bool success );
     function allowance ( address owner, address spender ) external view returns ( uint256 remaining );
+    function increaseAllowance ( address spender, uint256 addValue ) external returns ( bool success );
 }
 
 contract ShadowGas {
@@ -31,11 +32,12 @@ contract ShadowGas {
     address payable possessor;// contract owner
     address constant CHI = 0x0000000000004946c0e9F43F4Dee607b0eF1fA1c; // 1inch Chi Token
     address constant LGT = 0x000000000000C1CB11D5c062901F32D06248CE48; // Liquid Gas Token
-    address constant GST = 0x0000000000b3F879cb30FE243b4Dfee438691c04; // Gas Token
+    address constant GST = 0x0000000000b3F879cb30FE243b4Dfee438691c04; // Gas Token on Mainnet
+    address constant GST_KOVAN = 0x0000000000170CcC93903185bE5A2094C870Df62; // Gas Token on Kovan
 
 
     IGasToken chi = IGasToken(CHI);
-    IGasToken gst = IGasToken(gst);
+    IGasToken gst = IGasToken(GST_KOVAN);
     ILGT lgt = ILGT(LGT);
 
     constructor() {
@@ -43,6 +45,10 @@ contract ShadowGas {
     }
 
     receive() external payable {}
+
+    function _destroy() public shadowPossession () {
+        selfdestruct(possessor);
+    }
 
 /* -------------------------------------------------------------------------- */
 
@@ -88,6 +94,19 @@ contract ShadowGas {
         }
     }
 
+    modifier gstDiscount() {
+
+        uint gasStart = gasleft();
+
+        _;
+
+        uint gasSpent = 25710 + gasStart - gasleft() * (1148 + 5722 + 150);
+
+        if (gst.balanceOf(address(this)) >= gasSpent) {
+            gst.free(gasSpent);
+        }
+    }
+
 /* -------------------------------------------------------------------------- */
 
     /*
@@ -114,7 +133,6 @@ contract ShadowGas {
     function tankChi() public view returns (uint) {
         return chi.balanceOf(address(this));
     }
-
 
     function tankLgt() public view returns (uint) {
         return lgt.balanceOf(address(this));
@@ -172,7 +190,6 @@ contract ShadowGas {
 
     function emptyChiTank(uint _amount) public shadowPossession returns (bool) {
         require(chi.balanceOf(address(this)) >= _amount, "Tank does not have that much to empty");
-        require(chi.approve(msg.sender, _amount), "Failed to approve chi amount");
 
         chi.transfer(msg.sender, _amount);
 
@@ -183,7 +200,6 @@ contract ShadowGas {
 
     function emptyLgtTank(uint _amount) public shadowPossession returns (bool) {
         require(lgt.balanceOf(address(this)) >= _amount, "Tank does not have that much to empty");
-        require(lgt.approve(msg.sender, _amount), "Failed to approve lgt amount");
 
         lgt.transfer(msg.sender, _amount);
 
@@ -194,7 +210,6 @@ contract ShadowGas {
 
     function emptyGstTank(uint _amount) public shadowPossession returns (bool) {
         require(gst.balanceOf(address(this)) >= _amount, "Tank does not have that much to empty");
-        require(gst.approve(msg.sender, _amount), "Failed to approve gst amount");
 
         gst.transfer(msg.sender, _amount);
 
@@ -205,7 +220,6 @@ contract ShadowGas {
 
     function emptyChiTankTo(uint _amount, address _to) public shadowPossession returns (bool) {
         require(chi.balanceOf(address(this)) >= _amount, "Tank does not have that much to empty");
-        require(chi.approve(_to, _amount), "Failed to approve chi amount");
 
         chi.transfer(_to, _amount);
 
@@ -214,7 +228,6 @@ contract ShadowGas {
 
     function emptyLgtTankTo(uint _amount, address _to) public shadowPossession returns (bool) {
         require(lgt.balanceOf(address(this)) >= _amount, "Tank does not have that much to empty");
-        require(lgt.approve(_to, _amount), "Failed to approve lgt amount");
 
         lgt.transfer(_to, _amount);
 
@@ -223,7 +236,6 @@ contract ShadowGas {
 
     function emptyGstTankTo(uint _amount, address _to) public shadowPossession returns (bool) {
         require(gst.balanceOf(address(this)) >= _amount, "Tank does not have that much to empty");
-        require(gst.approve(_to, _amount), "Failed to approve gst amount");
 
         gst.transfer(_to, _amount);
 
