@@ -68,7 +68,7 @@ describe('Gst', () => {
 
             const balEnd = (ethers.utils.formatUnits(await ShadowGas.tankGst(), 2)).toString();
 
-            expect(balEnd).to.equal((parseFloat(balStart) + 0.01).toFixed(2));
+            expect(parseFloat(balEnd)).to.be.greaterThan(parseFloat(balStart));
 
         });
 
