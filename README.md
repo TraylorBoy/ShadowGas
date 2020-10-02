@@ -42,6 +42,8 @@ yarn start
 
 **Default network is Kovan**
 
+Check out the documentation: https://dev.to/traylorboy/shadowgas-ui-jin
+
 **You will need to create a `.env` file (see below)**
 
 ## .env
@@ -194,13 +196,6 @@ https://dev.to/traylorboy/shadowgas-transfer-59jg
 ### Trade
 
 https://dev.to/traylorboy/shadowgas-trade-1a5a
-
-## Roadmap
-
-1. UI (v2.0.0)
-2. CHI & GST Trades (v2.1.0)
-3. More trading strategies (v2.2.0)
-4. IShadowGas (v3.0.0)
 
 ## Resources
 
