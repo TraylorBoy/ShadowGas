@@ -29,7 +29,7 @@ function WrongNetwork(props) {
                         fontSize={[2, 3]}
                         px={[3, 0]}
                     >
-                        Switch to the Kovan Ethereum test network
+                        Switch to the {props.networkName} Ethereum network
                     </Heading>
                     <Link>
                         <Icon
