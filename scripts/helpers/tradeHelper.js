@@ -1,7 +1,5 @@
 const bre = require('@nomiclabs/buidler');
-const {
-    ethers
-} = require('ethers');
+const { ethers } = require('ethers');
 const Logger = require('./logHelper');
 const Store = require('./storeHelper');
 const Oracle = require('./oracleHelper');
@@ -12,10 +10,8 @@ exports.TRADER = {
     TradeCount: 0,
     TotalProfit: 0,
     Log: () => {
-
         Logger.talk(`Total Profit: ${this.TRADER.TotalProfit}`);
-
-    }
+    },
 };
 
 exports.TRADE = {
@@ -25,28 +21,27 @@ exports.TRADE = {
         Logger.talk(`Trade Finished`);
         Logger.talk(`Trade: ${this.TRADE.TradeNumber}`);
         Logger.talk(`Profit: ${this.TRADE.Profit}`);
-    }
+    },
 };
 
 exports.lgtArb = async () => {
-
     if (await Oracle.LGT_TRADE.TradeFound()) {
-
         Logger.talk('Initiating trade');
 
-        const ShadowGas = await bre.ethers.getContractAt('ShadowGas', process.env.SHADOWGAS);
+        const ShadowGas = await bre.ethers.getContractAt(
+            'ShadowGas',
+            process.env.SHADOWGAS
+        );
 
         const balanceBefore = await Store.walletBalance();
 
         await ShadowGas.lgtArb(Oracle.LGT_TRADE.BuyAmount, {
             gasLimit: Oracle.LGT_TRADE.GasLimitForTrade,
             gasPrice: Oracle.LGT_TRADE.GasPriceForTrade,
-            value: Oracle.LGT_TRADE.GasCostForTrade
+            value: Oracle.LGT_TRADE.GasCostForTrade,
         }).then(async (tx) => {
-
             Logger.talk('Waiting for transaction to finish');
             await tx.wait();
-
         });
 
         const balanceAfter = await Store.walletBalance();
@@ -59,30 +54,27 @@ exports.lgtArb = async () => {
         this.TRADER.TotalProfit += this.TRADE.Profit;
 
         this.TRADE.Log();
-
     }
-
 };
 
 exports.chiArb = async () => {
-
     if (await Oracle.CHI_TRADE.TradeFound()) {
-
         Logger.talk('Initiating trade');
 
-        const ShadowGas = await bre.ethers.getContractAt('ShadowGas', process.env.SHADOWGAS);
+        const ShadowGas = await bre.ethers.getContractAt(
+            'ShadowGas',
+            process.env.SHADOWGAS
+        );
 
         const balanceBefore = await Store.walletBalance();
 
         await ShadowGas.chiArb(Oracle.CHI_TRADE.BuyAmount, {
             gasLimit: Oracle.CHI_TRADE.GasLimitForTrade,
             gasPrice: Oracle.CHI_TRADE.GasPriceForTrade,
-            value: Oracle.CHI_TRADE.GasCostForTrade
+            value: Oracle.CHI_TRADE.GasCostForTrade,
         }).then(async (tx) => {
-
             Logger.talk('Waiting for transaction to finish');
             await tx.wait();
-
         });
 
         const balanceAfter = await Store.walletBalance();
@@ -95,7 +87,5 @@ exports.chiArb = async () => {
         this.TRADER.TotalProfit += this.TRADE.Profit;
 
         this.TRADE.Log();
-
     }
-
 };

@@ -18,6 +18,7 @@
 
 1. Stores and Transfers 1Inch Chi Tokens, Liquid Gas Tokens, and GST2 Tokens
 2. Trades Liquid Gas Tokens
+3. Light Station UI to interact with the deployed contract on the Kovan test network via your web browser and MetaMask wallet
 
 ## Install
 
@@ -28,6 +29,18 @@ cd ShadowGas
 
 yarn install
 ```
+
+## UI
+
+```sh
+cd client
+
+yarn install
+
+yarn start
+```
+
+**Default network is Kovan**
 
 **You will need to create a `.env` file (see below)**
 
@@ -57,7 +70,7 @@ ETH_GAS_STATION="" - EthGasStation API Key
 `EmptyLgtTo` - Address to transfer Lgt to
 `EmptyGstTo` - Address to transfer Gst to
 `GasLimit` - Gas Limit
-`GasSpeed` - Gas Speed ("fast", "average", "slow") 
+`GasSpeed` - Gas Speed ("fast", "average", "slow")
 `TradeLimit` - The amount of trades to perform
 `LgtTradeAmount` - Amount of LGT Tokens to trade
 ```
@@ -66,11 +79,11 @@ Gas Price is retrieved from https://ethgasstation.info/ and https://etherscan.io
 
 You will need an API key for both!
 
-**Create *.env* file then modify *shadow.config.json* and *buidler.config.js* (module.exports) before running tasks/tests**
+**Create _.env_ file then modify _shadow.config.json_ and _buidler.config.js_ (module.exports) before running tasks/tests**
 
 ## Deploy
 
-*ShadowGas contract size is 6.39(Kb)*
+_ShadowGas contract size is 6.39(Kb)_
 
 ```sh
 npx buidler deploy
@@ -82,7 +95,7 @@ Will deploy contract to the `defaultNetwork` defined in `buidler.config.js`
 
 ## Store
 
-*`<GAS_TOKEN>` should be either **Chi**, **Lgt**, or **Gst***
+\*`<GAS_TOKEN>` should be either **Chi**, **Lgt**, or **Gst\***
 
 ### Refuel
 
@@ -102,7 +115,7 @@ Retrieves Chi, Lgt, or Gst token balance at contract's address
 
 ## Transfer
 
-*`<GAS_TOKEN>` should be either **Chi** or **Lgt***
+\*`<GAS_TOKEN>` should be either **Chi** or **Lgt\***
 
 ### Empty
 
@@ -110,7 +123,7 @@ Retrieves Chi, Lgt, or Gst token balance at contract's address
 npx buidler empty --token <GAS_TOKEN>
 ```
 
-Sends Chi, Lgt, or Gst from contract to possessor *(contract owner)*
+Sends Chi, Lgt, or Gst from contract to possessor _(contract owner)_
 
 ### EmptyTo
 
@@ -118,11 +131,11 @@ Sends Chi, Lgt, or Gst from contract to possessor *(contract owner)*
 npx buidler emptyTo --token <GAS_TOKEN>
 ```
 
-Sends Chi, Lgt, or Gst from contract to address *(modify in shadow.config.json)*
+Sends Chi, Lgt, or Gst from contract to address _(modify in shadow.config.json)_
 
 ## Trade
 
-*Only trades LGT, but can use refueled CHI for discounts so profit may be more than expected if discount is applied*
+_Only trades LGT, but can use refueled CHI for discounts so profit may be more than expected if discount is applied_
 
 ### Oracle
 
@@ -146,7 +159,7 @@ Will run a loop to continuously check for trade opportunities every minute and w
 npx buidler test
 ```
 
-Will test *ALL* contract functions
+Will test _ALL_ contract functions
 
 ```sh
 npx buidler test ./test/gst-test.js
@@ -171,12 +184,15 @@ Will test only the contract's lgt functions
 ## Examples
 
 ### Store
+
 https://dev.to/traylorboy/shadowgas-store-40m9
 
 ### Transfer
+
 https://dev.to/traylorboy/shadowgas-transfer-59jg
 
 ### Trade
+
 https://dev.to/traylorboy/shadowgas-trade-1a5a
 
 ## Roadmap
@@ -202,7 +218,7 @@ https://github.com/projectchicago/gastoken
 
 👤 **Marques Traylor**
 
-* Github: [@TraylorBoy](https://github.com/TraylorBoy)
+-   Github: [@TraylorBoy](https://github.com/TraylorBoy)
 
 ## 🤝 Contributing
 
@@ -217,5 +233,6 @@ Give a ⭐️ if this project helped you!
 Copyright © 2020 [Marques Traylor](https://github.com/TraylorBoy).<br />
 This project is [MIT](https://github.com/TraylorBoy/ShadowGas/blob/master/LICENSE) licensed.
 
-***
+---
+
 _This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)_
