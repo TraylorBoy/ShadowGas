@@ -266,7 +266,7 @@ module.exports = {
     },
     abiExporter: {
         path: './abi',
-        only: [],
+        only: ['ShadowGas'],
         clear: true
     },
     spdxLicenseIdentifier: {
