@@ -1,44 +1,44 @@
 {
-  "name": "@traylorboy/shadow-gas",
-  "version": "1.1.0",
-  "description": "Stores, Transfers, and Trades, Ethereum Gas Tokens",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/TraylorBoy/ShadowGas.git"
-  },
-  "author": "Marques Traylor",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/TraylorBoy/ShadowGas/issues"
-  },
-  "homepage": "https://github.com/TraylorBoy/ShadowGas#readme",
-  "devDependencies": {
-    "@nomiclabs/buidler": "^1.4.5",
-    "@nomiclabs/buidler-ethers": "^2.0.0",
-    "@nomiclabs/buidler-waffle": "^2.1.0",
-    "@nomiclabs/buidler-web3": "^1.3.4",
-    "buidler-abi-exporter": "^1.0.1",
-    "buidler-contract-sizer": "^1.0.2",
-    "buidler-ethers-v5": "^0.2.2",
-    "buidler-spdx-license-identifier": "^1.0.4",
-    "chai": "^4.2.0",
-    "ethereum-waffle": "^3.1.0",
-    "husky": "^4.3.0"
-  },
-  "dependencies": {
-    "@ethersproject/address": "^5.0.0-beta",
-    "@ethersproject/contracts": "^5.0.0-beta",
-    "@ethersproject/networks": "^5.0.0-beta",
-    "@ethersproject/providers": "^5.0.0-beta",
-    "@ethersproject/solidity": "^5.0.0-beta",
-    "@openzeppelin/contracts": "^3.2.0",
-    "@uniswap/sdk": "^3.0.3",
-    "dotenv": "^8.2.0",
-    "ethers": "^5.0.13",
-    "exec-sh": "^0.3.4",
-    "execution-time": "^1.4.1",
-    "node-fetch": "^2.6.1",
-    "solc": "^0.7.1",
-    "web3": "^1.3.0"
-  }
+    "name": "@traylorboy/shadow-gas",
+    "version": "2.0.0",
+    "description": "Stores, Transfers, and Trades, Ethereum Gas Tokens",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/TraylorBoy/ShadowGas.git"
+    },
+    "author": "Marques Traylor",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/TraylorBoy/ShadowGas/issues"
+    },
+    "homepage": "https://github.com/TraylorBoy/ShadowGas#readme",
+    "devDependencies": {
+        "@nomiclabs/buidler": "^1.4.5",
+        "@nomiclabs/buidler-ethers": "^2.0.0",
+        "@nomiclabs/buidler-waffle": "^2.1.0",
+        "@nomiclabs/buidler-web3": "^1.3.4",
+        "buidler-abi-exporter": "^1.0.1",
+        "buidler-contract-sizer": "^1.0.2",
+        "buidler-ethers-v5": "^0.2.2",
+        "buidler-spdx-license-identifier": "^1.0.4",
+        "chai": "^4.2.0",
+        "ethereum-waffle": "^3.1.0",
+        "husky": "^4.3.0"
+    },
+    "dependencies": {
+        "@ethersproject/address": "^5.0.0-beta",
+        "@ethersproject/contracts": "^5.0.0-beta",
+        "@ethersproject/networks": "^5.0.0-beta",
+        "@ethersproject/providers": "^5.0.0-beta",
+        "@ethersproject/solidity": "^5.0.0-beta",
+        "@openzeppelin/contracts": "^3.2.0",
+        "@uniswap/sdk": "^3.0.3",
+        "dotenv": "^8.2.0",
+        "ethers": "^5.0.13",
+        "exec-sh": "^0.3.4",
+        "execution-time": "^1.4.1",
+        "node-fetch": "^2.6.1",
+        "solc": "^0.7.1",
+        "web3": "^1.3.0"
+    }
 }
