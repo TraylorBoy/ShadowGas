@@ -21,6 +21,22 @@ const connectMetaMask = async () => {
 
                 resolve(provider);
             }
+            // Other browser wallets
+            else if (window.web3) {
+                const provider = new ethers.providers.Web3Provider(
+                    window.web3.currentProvider
+                );
+
+                resolve(provider);
+            }
+            // If all else fails...
+            else {
+                const provider = new ethers.providers.Web3Provider(
+                    new Web3.providers.WebsocketProvider('ws://localhost:8546')
+                );
+
+                resolve(provider);
+            }
         } catch (error) {
             reject(error);
         }

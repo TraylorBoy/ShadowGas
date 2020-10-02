@@ -1,25 +1,16 @@
 // vscode-fold=3
 import React from 'react';
 import ethers from 'ethers';
-import {
-    Flex,
-    Box,
-    Heading,
-    Text,
-    Card,
-    Button,
-    MetaMaskButton,
-    Icon,
-} from 'rimble-ui';
+import { Flex, Box, Heading, Text, Card, Button } from 'rimble-ui';
 
-import Connect from './scripts/connect';
-
+import Connect from './components/Connect';
 import Network from './components/Network';
 import Connected from './components/Connected';
 import Balances from './components/Balances';
 import Store from './components/Store';
 import Transfer from './components/Transfer';
 import Trade from './components/Trade';
+import WrongNetwork from './components/WrongNetwork';
 
 import './App.css';
 
@@ -43,6 +34,7 @@ class App extends React.Component {
         shadow: null,
         wallet: null,
         walletAddress: 'Not Connected',
+        devWallet: false,
         balance: {
             eth: 0,
             gst: 0,
@@ -52,55 +44,14 @@ class App extends React.Component {
         },
         network: 'Not Connected',
         isConnected: false,
+        connectionRequired: false,
+        networkRequired: false,
         task: 'Connect',
     };
 
     /* -------------------------------------------------------------------------- */
     /*                                  Handlers                                  */
     /* -------------------------------------------------------------------------- */
-
-    handleConnect = async () => {
-        try {
-            const _wallet = await Connect.connectWallet();
-            const _walletAddress = await _wallet.getAddress();
-            const _network = await _wallet.provider.getNetwork();
-            const _shadow = await Connect.connectShadow(_wallet);
-
-            this.setState((state) => ({
-                shadow: _shadow,
-                wallet: _wallet,
-                walletAddress: _walletAddress,
-                isConnected: true,
-                network: _network.name.toUpperCase(),
-                balance: {
-                    shouldUpdate: true,
-                },
-            }));
-        } catch (error) {
-            console.error(error.message);
-        }
-    };
-
-    handleMetaMaskConnect = async () => {
-        try {
-            const metaMask = await Connect.connectMetaMask();
-
-            const _wallet = await metaMask.getSigner();
-            const _walletAddress = await _wallet.getAddress();
-            const _network = await metaMask.getNetwork();
-            const _shadow = await Connect.connectShadow(_wallet);
-
-            this.setState((state) => ({
-                shadow: _shadow,
-                wallet: _wallet,
-                walletAddress: _walletAddress,
-                isConnected: true,
-                network: _network.name.toUpperCase(),
-            }));
-        } catch (error) {
-            console.error(error.message);
-        }
-    };
 
     handleBalanceUpdate = async () => {
         try {
@@ -114,6 +65,57 @@ class App extends React.Component {
         }
     };
 
+    handleConnectionRequest = async (
+        _wallet,
+        _walletAddress,
+        _network,
+        _shadow,
+        _devWallet
+    ) => {
+        try {
+            if (_network.name.toUpperCase() !== 'KOVAN') {
+                this.setState({
+                    networkRequired: true,
+                    network: _network.name.toUpperCase(),
+                });
+            } else {
+                this.setState((state) => ({
+                    shadow: _shadow,
+                    wallet: _wallet,
+                    walletAddress: _walletAddress,
+                    isConnected: true,
+                    network: _network.name.toUpperCase(),
+                    devWallet: _devWallet,
+                    balance: {
+                        shouldUpdate: true,
+                    },
+                }));
+            }
+        } catch (error) {
+            console.error(error.message);
+        }
+    };
+
+    handleConnectionRequired = async () => {
+        this.setState({
+            connectionRequired: true,
+        });
+
+        this.connectTask();
+    };
+
+    handleCloseConnectionRequired = async () => {
+        this.setState({
+            connectionRequired: false,
+        });
+    };
+
+    handleCloseNetworkRequired = async () => {
+        this.setState({
+            networkRequired: false,
+        });
+    };
+
     /* -------------------------------------------------------------------------- */
     /*                                    Tasks                                   */
     /* -------------------------------------------------------------------------- */
@@ -123,6 +125,10 @@ class App extends React.Component {
     };
 
     balancesTask = async () => {
+        this.setState((state) => ({
+            task: 'Balances',
+        }));
+
         if (this.state.isConnected && this.state.balance.shouldUpdate) {
             try {
                 const gstBalance = ethers.utils.formatUnits(
@@ -145,15 +151,10 @@ class App extends React.Component {
                         eth: ethBalance,
                         shouldUpdate: false,
                     },
-                    task: 'Balances',
                 }));
             } catch (error) {
                 console.error(error.message);
             }
-        } else {
-            this.setState((state) => ({
-                task: 'Balances',
-            }));
         }
     };
 
@@ -177,7 +178,6 @@ class App extends React.Component {
         return (
             <div id='app'>
                 {/* -------------------------------------------------------------------------- */}
-
                 <Flex id='status'>
                     <Box>
                         <Network networkName={this.state.network} />
@@ -190,9 +190,14 @@ class App extends React.Component {
                         />
                     </Box>
                 </Flex>
-
                 {/* -------------------------------------------------------------------------- */}
-
+                {/*
+                --------------------------------------------------------------------------
+                */
+                /* Nagivation */
+                /*
+                --------------------------------------------------------------------------
+                */}
                 <Flex id='content-wrap'>
                     <Card
                         p={3}
@@ -236,14 +241,18 @@ class App extends React.Component {
                                     onClick={this.transferTask}
                                 />
                                 <Text mb={3}>Transfer</Text>
-                                <Button
+                                {/*
+                                --------------------------------------------------------------------------
+                                */}{' '}
+                                {/* TODO: TRADE*/}
+                                {/*<Button
                                     icononly={true}
                                     size='small'
                                     icon='Assessment'
                                     mainColor={colors.element}
                                     onClick={this.tradeTask}
                                 />
-                                <Text mb={3}>Trade</Text>
+                                <Text mb={3}>Trade</Text>*/}
                             </Box>
 
                             {/* -------------------------------------------------------------------------- */}
@@ -262,69 +271,33 @@ class App extends React.Component {
                                     </Box>
                                 </Box>
 
-                                {/* -------------------------------------------------------------------------- */}
+                                {this.state.task === 'Connect' && (
+                                    <Box p={3}>
+                                        <Heading pl={0}>Connect</Heading>
 
-                                {this.state.task === 'Connect' &&
-                                    !this.state.isConnected && (
-                                        <Box p={3}>
-                                            <Heading pl={0}>Connect</Heading>
+                                        <Connect
+                                            isConnected={this.state.isConnected}
+                                            connectionRequest={
+                                                this.handleConnectionRequest
+                                            }
+                                            closeRequired={
+                                                this
+                                                    .handleCloseConnectionRequired
+                                            }
+                                            connectionRequired={
+                                                this.state.connectionRequired
+                                            }
+                                        ></Connect>
+                                    </Box>
+                                )}
 
-                                            <Box>
-                                                <Text.p color={colors.text}>
-                                                    Connect to your wallet
-                                                    defined in your '.env.local'
-                                                    file by pressing the button
-                                                    below
-                                                </Text.p>
-                                                <Box textAlign='center'>
-                                                    <Button
-                                                        icon='AccountBalanceWallet'
-                                                        mainColor={
-                                                            colors.element
-                                                        }
-                                                        onClick={
-                                                            this.handleConnect
-                                                        }
-                                                    >
-                                                        Connect
-                                                    </Button>
-                                                </Box>
-
-                                                <Text.p color={colors.text}>
-                                                    You may also connect with
-                                                    your MetaMask wallet
-                                                </Text.p>
-                                                <Box textAlign='center'>
-                                                    <MetaMaskButton.Outline
-                                                        mainColor={
-                                                            colors.element
-                                                        }
-                                                        onClick={
-                                                            this
-                                                                .handleMetaMaskConnect
-                                                        }
-                                                    >
-                                                        Connect with MetaMask
-                                                    </MetaMaskButton.Outline>
-                                                </Box>
-                                            </Box>
-                                        </Box>
-                                    )}
-
-                                {this.state.task === 'Connect' &&
-                                    this.state.isConnected && (
-                                        <Box p={3}>
-                                            <Heading>Wallet Connected</Heading>
-
-                                            <Box textAlign='center'>
-                                                <Icon
-                                                    name='CheckCircle'
-                                                    color='success'
-                                                    size='150'
-                                                />
-                                            </Box>
-                                        </Box>
-                                    )}
+                                <WrongNetwork
+                                    networkRequired={this.state.networkRequired}
+                                    closeWrongNetwork={
+                                        this.handleCloseNetworkRequired
+                                    }
+                                    networkName={this.state.network}
+                                />
 
                                 {this.state.task === 'Balances' && (
                                     <Box p={3}>
@@ -341,9 +314,15 @@ class App extends React.Component {
                                         <Store
                                             isConnected={this.state.isConnected}
                                             shadow={this.state.shadow}
+                                            wallet={this.state.wallet}
+                                            devWallet={this.state.devWallet}
+                                            requestConnection={
+                                                this.handleConnectionRequired
+                                            }
                                             updateBalance={
                                                 this.handleBalanceUpdate
                                             }
+                                            showBalance={this.balancesTask}
                                         />
                                     </Box>
                                 )}
@@ -354,9 +333,15 @@ class App extends React.Component {
                                         <Transfer
                                             isConnected={this.state.isConnected}
                                             shadow={this.state.shadow}
+                                            wallet={this.state.wallet}
+                                            devWallet={this.state.devWallet}
+                                            requestConnection={
+                                                this.handleConnectionRequired
+                                            }
                                             updateBalance={
                                                 this.handleBalanceUpdate
                                             }
+                                            showBalance={this.balancesTask}
                                         />
                                     </Box>
                                 )}
@@ -367,6 +352,9 @@ class App extends React.Component {
                                         <Trade
                                             isConnected={this.state.isConnected}
                                             shadow={this.state.shadow}
+                                            requestConnection={
+                                                this.handleConnectionRequired
+                                            }
                                             updateBalance={
                                                 this.handleBalanceUpdate
                                             }

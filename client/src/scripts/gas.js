@@ -19,7 +19,7 @@ const ethGasStation = async (speed, amount) => {
 
     const prices = await request.json();
 
-    const gasLimit = 39141 + 36224 + 55000 * amount;
+    const gasLimit = 39141 + 36224 * amount + 55000;
 
     if (speed === 'fast') {
         const gasPrice = prices['fast'] / 10;
@@ -78,7 +78,7 @@ const etherScan = async (speed, amount) => {
 
     const prices = await request.json();
 
-    const gasLimit = (39141 + 36224 + 55000) * amount;
+    const gasLimit = 39141 + 36224 * amount + 55000;
 
     if (speed === 'fast') {
         const requestWaitTime = await fetch(
